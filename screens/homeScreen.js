@@ -11,7 +11,7 @@ const HomeScreen=()=>{
     
         return(
           <View style={styles.screen}>
-              <OrdersCard />
+              <OrdersCard box1="Pending" box2="Confirmed" box3="Pre-order" header="ORDERS"/>
               <View style={styles.cardContainer}>
               <CustomCard title="Your Dishes"/>
               <CustomCard title="Kitchen Hours"/>

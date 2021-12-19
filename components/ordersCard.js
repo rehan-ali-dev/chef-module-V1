@@ -11,12 +11,12 @@ const  OrdersCard=props=>{
     return(
         <View style={styles.orderCard}>
             <View style={styles.orderHeader}>
-                <Text style={styles.headerText}>ORDERS</Text>
+                <Text style={styles.headerText}>{props.header}</Text>
             </View>
             <View style={styles.boxesContainer}>
-                <OrderBox number={5} title="Pending"/>
-                <OrderBox number={500} title="Confirmed"/>
-                <OrderBox number={5} title="Pre-orders"/>
+                <OrderBox number={5} title={props.box1}/>
+                <OrderBox number={500} title={props.box2}/>
+                <OrderBox number={5} title={props.box3}/>
             </View>
         </View>
     )

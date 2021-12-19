@@ -24,11 +24,11 @@ const styles=StyleSheet.create({
 
     customCard:{
          width:'85%',
-         backgroundColor:Colors.lightBlack,
+         backgroundColor:Colors.primaryColor,
          borderRadius:20,
          elevation:3,
          paddingHorizontal:20,
-         paddingVertical:15,
+         paddingVertical:10,
          overflow:'hidden',
          marginVertical:5,
          marginHorizontal:10
