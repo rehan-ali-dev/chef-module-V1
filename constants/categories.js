@@ -1,0 +1,1 @@
+export const Categories=['All','Break Fast','Lunch','Supper','Dinner'];
