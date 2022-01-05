@@ -17,6 +17,7 @@ import OrdersScreen from '../screens/ordersScreen';
 import ProfileScreen from '../screens/profileScreen';
 import DishesScreen from '../screens/dishesScreen';
 import PaymentsScreen from '../screens/paymentsScreen';
+import AddDisheScreen from '../screens/addDishScreen';
 
 const defaultNavConfiguration= {
     //set Default Configuration
@@ -44,6 +45,7 @@ const OrdersNavigator=createStackNavigator(
 const DishesNavigator=createStackNavigator(
     {    
         Dishes:DishesScreen,
+        AddDish: AddDisheScreen,
     },defaultNavConfiguration
 );
 
