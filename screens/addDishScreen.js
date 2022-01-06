@@ -5,17 +5,19 @@ import Colors from '../constants/Colors';
 import Textarea from "react-native-textarea";
 import { useEffect, useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
+import * as Notifications from 'expo-notifications';
 
 
 const AddDisheScreen=()=>{
-    const [selectedCategory,setSelectedCategory]=useState("none");
+    const [dishName,setDishName]=useState('');
+    const [selectedCategory,setSelectedCategory]=useState("");
     const [selectedCuisine,setSelectedCuisine]=useState("none");
     const [selectedServing,setSelectedServing]=useState(1);
+    const [dishPrice,setDishPrice]=useState('');
+    const [description,setDescription]=useState('');
+    const [imageUrl,setImageUrl]=useState('');
     
     const [isNameFocused,setNameFocused]=useState(false);
-    const [isCuisineFocused,setCuisineFocused]=useState(false);
-    const [isCategoryFocused,setCategoryFocused]=useState(false);
-    const [isSizeFocused,setSizeFocused]=useState(false);
     const [isPriceFocused,setPriceFocused]=useState(false);
     const [isDescFocused,setDescFocused]=useState(false);
 
@@ -23,15 +25,30 @@ const AddDisheScreen=()=>{
     const handlePriceFocus=()=> setPriceFocused(true);
     const handleNameBlur=()=> setNameFocused(false);
     const handlePriceBlur=()=> setPriceFocused(false);
-
-    const handleCuisineFocus=()=>setCuisineFocused(true);
-    const handleCategoryFocus=()=> setCategoryFocused(true);
-    const handleCuisineBlur=()=> setCuisineFocused(false);
-    const handleCategoryeBlur=()=> setCategoryFocused(false);
-    const handleSizeFocus=()=>setSizeFocused(true);
     const handleDescFocus=()=> setDescFocused(true);
-    const handleSizeBlur=()=> setSizeFocused(false);
     const handleDescBlur=()=> setDescFocused(false);
+    let tokenData;
+
+    useEffect(()=>{
+      tokenData=(Notifications.getExpoPushTokenAsync()).data;
+      console.log(tokenData);
+    },[]);
+
+    const triggerNotifications=()=>{
+      Notifications.scheduleNotificationAsync({
+        content:{
+          title:'My first local message',
+          body:'This is first local message!',
+        },
+        trigger:{
+          seconds:5
+        }
+      })
+    }
+
+    const addNewDish=()=>{
+
+    }
     
         return(
           <View style={styles.screen}>
@@ -41,7 +58,9 @@ const AddDisheScreen=()=>{
             <TextInput style={{...styles.inputText,borderColor:isNameFocused
                  ? Colors.primaryColor
                  : '#F5FCFF',
-             borderWidth: isNameFocused?1:0}} placeholder="Dish Name" onFocus={handleNameFocus} onBlur={handleNameBlur}/>
+             borderWidth: isNameFocused?1:0}} placeholder="Dish Name" onFocus={handleNameFocus} onBlur={handleNameBlur}
+             value={dishName} onChangeText={(text)=>setDishName(text)}
+             />
            
             <View style={styles.inputTitles}><Text style={styles.inputHeader}>Cuisine</Text></View>
             <View style={styles.container}>
@@ -97,14 +116,17 @@ const AddDisheScreen=()=>{
             <TextInput style={{...styles.inputText,borderColor:isPriceFocused
                  ? Colors.primaryColor
                  : '#F5FCFF',
-             borderWidth: isPriceFocused?1:0}} placeholder="Rs. Price" onFocus={handlePriceFocus} onBlur={handlePriceBlur}/>
+             borderWidth: isPriceFocused?1:0}} placeholder="Rs. Price" onFocus={handlePriceFocus} onBlur={handlePriceBlur}
+             value={dishPrice} onChangeText={(text)=>setDishPrice(text)}
+             />
 
             <View style={styles.inputTitles}><Text style={styles.inputHeader}>Description</Text></View>  
             <View style={styles.container2}>
         <Textarea
         containerStyle={styles.textareaContainer}
         style={styles.textarea}
-        onChangeText={()=>{}}
+        value={description}
+        onChangeText={(text)=>{setDescription(text)}}
         maxLength={300}
         placeholder={'Describe your dish ....'}
         placeholderTextColor={'#c7c7c7'}
@@ -115,14 +137,12 @@ const AddDisheScreen=()=>{
             <View style={styles.inputTitles
             }><Text style={styles.inputHeader}>Image</Text></View>    
             <TextInput style={{...styles.inputText,borderColor:isDescFocused?Colors.primaryColor:'#F5FCFF',
-            borderWidth:isDescFocused?1:0,}} multiline={true} placeholder="Image Url" onFocus={handleDescFocus} onBlur={handleDescBlur}/>
+            borderWidth:isDescFocused?1:0,}} multiline={true} placeholder="Image Url" onFocus={handleDescFocus} onBlur={handleDescBlur}
+            value={imageUrl} onChangeText={(text)=>setImageUrl(text)}
+            />
 
 <View style={styles.btnContainer}>
-            <TouchableOpacity onPress={()=>{   
-                           
-              
-               }
-            }>
+            <TouchableOpacity onPress={triggerNotifications}>
                 <View style={styles.buttonContainer}>
                     <Text style={styles.btnTitle}>Submit</Text>
                 </View>
@@ -160,6 +180,7 @@ const styles=StyleSheet.create(
             padding:5,
             paddingHorizontal:10,
             borderRadius:10,
+            fontSize:16
         },
         container: {
             
@@ -214,7 +235,7 @@ const styles=StyleSheet.create(
           textarea: {
             textAlignVertical: 'top',  // hack android
             height: 120,
-            fontSize: 14,
+            fontSize: 16,
             color: '#333',
           },
        
