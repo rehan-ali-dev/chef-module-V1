@@ -1,11 +1,13 @@
 import React from "react";
-import { View,Text,StyleSheet, Button, FlatList, Dimensions,TouchableOpacity,Picker,TextInput,ScrollView } from "react-native";
+import { View,Text,StyleSheet, Button, FlatList, Dimensions,TouchableOpacity,Picker,TextInput,ScrollView,ToastAndroid } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import Colors from '../constants/Colors';
 import Textarea from "react-native-textarea";
 import { useEffect, useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions'; 
+import IP from "../constants/IP";
 
 
 const AddDisheScreen=()=>{
@@ -16,6 +18,7 @@ const AddDisheScreen=()=>{
     const [dishPrice,setDishPrice]=useState('');
     const [description,setDescription]=useState('');
     const [imageUrl,setImageUrl]=useState('');
+    const [token,setToken]=useState('');
     
     const [isNameFocused,setNameFocused]=useState(false);
     const [isPriceFocused,setPriceFocused]=useState(false);
@@ -28,11 +31,34 @@ const AddDisheScreen=()=>{
     const handleDescFocus=()=> setDescFocused(true);
     const handleDescBlur=()=> setDescFocused(false);
     let tokenData;
+    //let token;
 
     useEffect(()=>{
-      tokenData=(Notifications.getExpoPushTokenAsync()).data;
-      console.log(tokenData);
+      Permissions.getAsync(Permissions.NOTIFICATIONS)
+      .then((statusObj)=>{
+        if(statusObj.status!=='granted'){
+          return Permissions.askAsync(Permissions.NOTIFICATIONS);
+        }
+        return statusObj;  
+      })
+      .then((statusObj)=>{
+        if(statusObj.status!=='granted'){
+          throw new Error('Permission not granted');
+        }
+      })
+      .then(()=>{
+         return Notifications.getExpoPushTokenAsync();
+      })
+      .then(response=>{
+        console.log(response);
+        setToken(response.data);
+        console.log(token);
+      })
+      .catch((err)=>{
+        return null;
+      })
     },[]);
+
 
     const triggerNotifications=()=>{
       Notifications.scheduleNotificationAsync({
@@ -46,9 +72,40 @@ const AddDisheScreen=()=>{
       })
     }
 
-    const addNewDish=()=>{
 
-    }
+
+    const addNewDish=()=>{
+      console.log("Token");
+      console.log(token);
+      let url=`http://${IP.ip}:3000/dish`;
+      let data={
+          dishName:dishName,
+          categoryName:selectedCategory,
+          price:parseInt(dishPrice),
+          description:description,
+          imageUrl:imageUrl,
+          cuisine:selectedCuisine,
+          servingSize:selectedServing,
+          status:true,
+          kitchenName:"Bisma Ka Kitchen",
+          pushToken:token
+
+      }
+      fetch(url,{
+          method:'POST',
+          headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+          body:JSON.stringify(data)
+      }).then((response)=>response.json())
+      .then((response)=>{
+          console.log(response);
+          })
+      .then(()=>ToastAndroid.show(`Dish Added Successfully`, ToastAndroid.SHORT))
+      .catch((error)=>console.log(error));
+
+  }
     
         return(
           <View style={styles.screen}>
@@ -142,7 +199,7 @@ const AddDisheScreen=()=>{
             />
 
 <View style={styles.btnContainer}>
-            <TouchableOpacity onPress={triggerNotifications}>
+            <TouchableOpacity onPress={addNewDish}>
                 <View style={styles.buttonContainer}>
                     <Text style={styles.btnTitle}>Submit</Text>
                 </View>
