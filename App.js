@@ -19,13 +19,20 @@ export default function App() {
 
   useEffect(()=>{
     const backgroundSubscription=Notifications.addNotificationResponseReceivedListener(
-      (response)=>{console.log(response);
+      (response)=>{
+        console.log("/////////////////     Background Response   ///////////////////////");
+        console.log(response);
+        console.log("#########################3");
+        console.log(response.notification.request.content.data);
       }
     )
 
     const forgroundSubscription=Notifications.addNotificationReceivedListener(
       (notification)=>{
+        console.log("/////////////////     Forground Response   ///////////////////////");
         console.log(notification);
+        console.log("#########################3");
+        console.log(notification.request.content.data);
         //you can navigate to different screen
         //send http request
       }
