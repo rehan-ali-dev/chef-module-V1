@@ -1,8 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View,ToastAndroid } from 'react-native';
 import HomeNavigator from './navigation/chefBottomNavigator';
 import { useEffect } from 'react';
 import * as Notifications from 'expo-notifications';
+import IP from './constants/IP';
 
 
 Notifications.setNotificationHandler({
@@ -23,7 +24,11 @@ export default function App() {
         console.log("/////////////////     Background Response   ///////////////////////");
         console.log(response);
         console.log("#########################3");
-        console.log(response.notification.request.content.data);
+        let senderToken=response.notification.request.content.data.sender;
+        let recieverToken=response.notification.request.content.data.reciever;
+        let orderId=response.notification.request.content.data.orderId;
+        let status=response.notification.request.content.data.status;
+        addnewNotification(orderId,senderToken,recieverToken,status);
       }
     )
 
@@ -32,7 +37,8 @@ export default function App() {
         console.log("/////////////////     Forground Response   ///////////////////////");
         console.log(notification);
         console.log("#########################3");
-        console.log(notification.request.content.data);
+        console.log(notification.request.content.data.sender);
+        console.log(notification.request.content.data.reciever);
         //you can navigate to different screen
         //send http request
       }
@@ -43,6 +49,28 @@ export default function App() {
       forgroundSubscription.remove();
     }
   },[]);
+
+  const addnewNotification=(orderId,sender,reciever,status)=>{
+    let url=`http://${IP.ip}:3000/notifications`;
+    let data={
+        orderId:orderId,
+        senderToken:sender,
+        recieverToken:reciever,
+        status:status
+    }
+    fetch(url,{
+        method:'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+        body:JSON.stringify(data)
+    }).then((response)=>response.json())
+    .then(()=>ToastAndroid.show(`You recieved new notification`, ToastAndroid.SHORT))
+    .catch((error)=>console.log(error));
+
+}
+
 
   return (
     <HomeNavigator/>
