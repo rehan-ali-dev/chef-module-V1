@@ -3,28 +3,69 @@ import { View,Text,StyleSheet, Button, FlatList, Dimensions,TouchableOpacity } f
 import Colors from '../constants/Colors';
 import { useEffect, useState } from "react";
 import NotificationCard from "../components/notificationCard";
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
+
 import IP from '../constants/IP';
 
 
 const NotificationScreen=(props)=>{
 
     const [isLoading,setLoading]=useState(true);
+    const [customerName,setCustomerName]=useState('');
+    const [firstName,setFirstName]=useState('');
+    const [lastName,setLastName]=useState('');
+    const [dishName,setDishName]=useState('');
+    const [orderedTime,setOrderedTime]=useState('');
+    const [customerToken,setCustomerToken]=useState('');
+    const [noPlates,setNoOfPlates]=useState(0);
     const [notificationsData,setNotificationsData]=useState([]);
+    let formated;
 
     const getCustomerName=(id)=>{
-        let customerName;
-           fetch(`http://${IP.ip}:3000/order/customerId/${id}`)
+            fetch(`http://${IP.ip}:3000/order/customerRecord/${id}`)
             .then((response)=>response.json())
             .then((response)=>{
-                customerName=response[0].cust_id;
-                console.log("customer");
-                console.log(customerName);
-                return customerName;
+                setFirstName(response[0].firstname);
+                setLastName(response[0].lastname);
             })
             .catch((error)=>console.error(error))
-          
     }
+
+    const getDishName=(id)=>{
+        fetch(`http://${IP.ip}:3000/order/dishRecord/${id}`)
+        .then((response)=>response.json())
+        .then((response)=>{
+            console.log(response[0]);
+            setDishName(response[0].dish_name);        
+        })
+        .catch((error)=>console.error(error))
+}
     
+        const getOrderedTime=(id)=>{
+            fetch(`http://${IP.ip}:3000/order/time/${id}`)
+            .then((response)=>response.json())
+            .then((response)=>{
+                console.log(response[0]);
+                setOrderedTime(response[0].time);
+                //formated=orderedTime.format("dd/mm/yyyy hh:MM:ss");  
+                //console.log(formated);      
+            })
+            .catch((error)=>console.error(error))
+        }
+
+        const getServingSize=(id)=>{
+            fetch(`http://${IP.ip}:3000/order/dishQuantity/${id}`)
+            .then((response)=>response.json())
+            .then((response)=>{
+                console.log(response[0]);
+                setNoOfPlates(response[0].quantity);
+                //formated=orderedTime.format("dd/mm/yyyy hh:MM:ss");  
+                //console.log(formated);      
+            })
+            .catch((error)=>console.error(error))
+        }
+
 
     useEffect(()=>{
         let recieverId='ExponentPushToken[-4WJz5C4pXrrGDKP9hB1hW]';
@@ -36,21 +77,51 @@ const NotificationScreen=(props)=>{
       },[]);
 
 
-       const renderNotificationCard=(itemData)=>{
 
+       const renderNotificationCard=(itemData)=>{
+            getCustomerName(itemData.item.order_id);
+            getDishName(itemData.item.order_id);
+            getOrderedTime(itemData.item.order_id);
+            getServingSize(itemData.item.order_id);
         return(
             <NotificationCard notificationTitle="Hey, Come here Its order for you!!"
-            customerName={getCustomerName(itemData.item.order_id)}
+            customerFname={firstName}
+            customerLname={lastName}
+            orderedDish={dishName}
+            timeOfOrder={orderedTime}
+            servingSize={noPlates}
             notSeen
-             onSelect={()=>{
-                     }
-
-                }
+             onSelect={sendNotificationToCustomer(itemData.item.order_id)}
            />
            )
-         
-        
        }
+
+       const sendNotificationToCustomer=(orderId)=>{
+        fetch(`http://${IP.ip}:3000/notifications/order/${orderId}`)
+        .then((response)=>response.json())
+        .then((response)=>{
+            setCustomerToken(response[0].sender);
+            console.log("%%%%%%%%%%%%%%%%%%");
+            console.log(customerToken);
+        })
+        .then(()=>{
+            fetch('https://exp.host/--/api/v2/push/send',{
+                method:'POST',
+                headers:{
+                    'Accept':'application/json',
+                    'Accept-Encoding':'gzip,deflate',
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify({
+                    to:customerToken,
+                    title:'Chef Confirm Your Order',
+                    body:"Kindly wait till delivery",  
+                    experienceId: "@rehan.ali/customer-module-V1",
+                })
+            });
+        }).then(()=>{console.log("Clicked Working")})
+        .catch((error)=>console.error(error))       
+        }
 
     
         return(

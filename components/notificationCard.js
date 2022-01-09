@@ -9,22 +9,22 @@ const  NotificationCard=props=>{
     return(
         <View style={styles.notificationCard}>
                 <Text style={styles.title}>{props.notificationTitle}</Text>
-                <Text style={styles.subTitle}>{props.customerName} wants to eat your homemade Karahi</Text>
+                <Text style={styles.subTitle}>{props.customerFname} {props.customerLname} wants to eat your homemade Karahi</Text>
                 <Text style={{...styles.title,color:Colors.primaryColor}}>Order Details</Text>
                 <View style={styles.notificationContainer}>
-                <Text style={{...styles.subTitle}}>Chicken Biryani</Text>
-                <Text style={{...styles.subTitle}}>1 Person</Text>
+                <Text style={{...styles.subTitle}}>{props.orderedDish}</Text>
+                <Text style={{...styles.subTitle}}>{props.servingSize} Person</Text>
                 </View>
                 <View style={styles.notificationContainer}>
                 <Text style={{...styles.subTitle}}>Order Placed At</Text>
-                <Text style={{...styles.subTitle}}>{props.orderedTime}</Text>
+                <Text style={{...styles.subTitle}}>{props.timeOfOrder}</Text>
                 </View>
 
 
            
             {props.notSeen &&
             <View style={styles.btnContainer}>
-            <TouchableOpacity onPress={props.onSelect}>
+            <TouchableOpacity onPress={()=>{}}>
                 <View style={{...styles.buttonContainer}}>
                     <Text style={styles.btnTitle}>Cancel</Text>
                 </View>
