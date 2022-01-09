@@ -18,6 +18,7 @@ import ProfileScreen from '../screens/profileScreen';
 import DishesScreen from '../screens/dishesScreen';
 import PaymentsScreen from '../screens/paymentsScreen';
 import AddDisheScreen from '../screens/addDishScreen';
+import NotificationScreen from '../screens/notificationScreen';
 
 const defaultNavConfiguration= {
     //set Default Configuration
@@ -33,6 +34,7 @@ const defaultNavConfiguration= {
 const HomeNavigator=createStackNavigator(
     {
         Home: HomeScreen,
+        Notifications:NotificationScreen
     },defaultNavConfiguration
 );
 

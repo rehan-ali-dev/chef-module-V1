@@ -4,10 +4,18 @@ import Colors from '../constants/Colors';
 import { useEffect, useState } from "react";
 import OrdersCard from '../components/ordersCard';
 import CustomCard from "../components/customCard";
+import { HeaderButtons,Item } from "react-navigation-header-buttons";
+import CustomHeaderButton from "../components/customHeaderButton";
 
 
-const HomeScreen=()=>{
+const HomeScreen=(props)=>{
 
+
+        const moveToNotifications=()=>{
+            props.navigation.navigate({
+                routeName:'Notifications',
+            });
+        }
     
         return(
           <View style={styles.screen}>
@@ -21,6 +29,19 @@ const HomeScreen=()=>{
           </View>
         )
     };
+
+HomeScreen.navigationOptions=navigationData=>{
+    const moveNotifications=()=>{
+        navigationData.navigation.navigate({
+            routeName:'Notifications'
+        })
+    }
+    return{
+        headerRight: ()=><HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+            <Item title="notification" iconName='ios-notifications' onPress={moveNotifications}/>
+        </HeaderButtons>
+    }
+}
 
 
 const styles=StyleSheet.create(
