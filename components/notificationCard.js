@@ -24,7 +24,7 @@ const  NotificationCard=props=>{
            
             {props.notSeen &&
             <View style={styles.btnContainer}>
-            <TouchableOpacity onPress={()=>{}}>
+            <TouchableOpacity>
                 <View style={{...styles.buttonContainer}}>
                     <Text style={styles.btnTitle}>Cancel</Text>
                 </View>

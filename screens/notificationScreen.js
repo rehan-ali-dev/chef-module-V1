@@ -46,7 +46,7 @@ const NotificationScreen=(props)=>{
             fetch(`http://${IP.ip}:3000/order/time/${id}`)
             .then((response)=>response.json())
             .then((response)=>{
-                console.log(response[0]);
+                //console.log(response[0]);
                 setOrderedTime(response[0].time);
                 //formated=orderedTime.format("dd/mm/yyyy hh:MM:ss");  
                 //console.log(formated);      
@@ -58,7 +58,7 @@ const NotificationScreen=(props)=>{
             fetch(`http://${IP.ip}:3000/order/dishQuantity/${id}`)
             .then((response)=>response.json())
             .then((response)=>{
-                console.log(response[0]);
+                //console.log(response[0]);
                 setNoOfPlates(response[0].quantity);
                 //formated=orderedTime.format("dd/mm/yyyy hh:MM:ss");  
                 //console.log(formated);      
@@ -91,37 +91,38 @@ const NotificationScreen=(props)=>{
             timeOfOrder={orderedTime}
             servingSize={noPlates}
             notSeen
-             onSelect={sendNotificationToCustomer(itemData.item.order_id)}
-           />
-           )
-       }
-
-       const sendNotificationToCustomer=(orderId)=>{
-        fetch(`http://${IP.ip}:3000/notifications/order/${orderId}`)
-        .then((response)=>response.json())
-        .then((response)=>{
+            onSelect={()=>{
+            fetch(`http://${IP.ip}:3000/notifications/order/${itemData.item.order_id}`)
+            .then((response)=>response.json())
+            .then((response)=>{
             setCustomerToken(response[0].sender);
             console.log("%%%%%%%%%%%%%%%%%%");
             console.log(customerToken);
-        })
-        .then(()=>{
-            fetch('https://exp.host/--/api/v2/push/send',{
-                method:'POST',
-                headers:{
-                    'Accept':'application/json',
-                    'Accept-Encoding':'gzip,deflate',
-                    'Content-Type':'application/json'
-                },
-                body: JSON.stringify({
-                    to:customerToken,
-                    title:'Chef Confirm Your Order',
-                    body:"Kindly wait till delivery",  
-                    experienceId: "@rehan.ali/customer-module-V1",
-                })
-            });
-        }).then(()=>{console.log("Clicked Working")})
-        .catch((error)=>console.error(error))       
-        }
+            })
+            .then(()=>{
+                console.log("Fetching.........");
+                fetch('https://exp.host/--/api/v2/push/send',{
+                    method:'POST',
+                    headers:{
+                        'Accept':'application/json',
+                        'Accept-Encoding':'gzip,deflate',
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify({
+                        to:customerToken,
+                        title:'Chef Confirm Your Order',
+                        body:"Kindly wait till delivery",  
+                        experienceId: "@rehan.ali/customer-module-V1",
+                    })
+                });
+            })
+            .then(()=>{console.log("Clicked Working")})
+            .catch((error)=>console.error(error));  
+
+            }}
+           />
+           )
+       }
 
     
         return(
