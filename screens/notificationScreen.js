@@ -110,6 +110,12 @@ const NotificationScreen=(props)=>{
                     },
                     body: JSON.stringify({
                         to:customerToken,
+                        data:{
+                            sender:'ExponentPushToken[-4WJz5C4pXrrGDKP9hB1hW]',
+                            reciever:customerToken,
+                            orderId:itemData.item.order_id,
+                            status:false
+                        },
                         title:'Chef Confirm Your Order',
                         body:"Kindly wait till delivery",  
                         experienceId: "@rehan.ali/customer-module-V1",
