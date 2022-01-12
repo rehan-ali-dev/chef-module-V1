@@ -24,11 +24,6 @@ export default function App() {
         console.log("/////////////////     Background Response   ///////////////////////");
         console.log(response);
         console.log("#########################3");
-        let senderToken=response.notification.request.content.data.sender;
-        let recieverToken=response.notification.request.content.data.reciever;
-        let orderId=response.notification.request.content.data.orderId;
-        let status=response.notification.request.content.data.status;
-        addnewNotification(orderId,senderToken,recieverToken,status);
       }
     )
 
@@ -37,8 +32,11 @@ export default function App() {
         console.log("/////////////////     Forground Response   ///////////////////////");
         console.log(notification);
         console.log("#########################3");
-        console.log(notification.request.content.data.sender);
-        console.log(notification.request.content.data.reciever);
+        let senderToken=notification.request.content.data.sender;
+        let recieverToken=notification.request.content.data.reciever;
+        let orderId=notification.request.content.data.orderId;
+        let status=notification.request.content.data.status;
+        addnewNotification(orderId,senderToken,recieverToken,status);
         //you can navigate to different screen
         //send http request
       }

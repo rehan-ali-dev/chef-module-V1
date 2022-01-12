@@ -11,85 +11,32 @@ import IP from '../constants/IP';
 
 const NotificationScreen=(props)=>{
 
-    const [isLoading,setLoading]=useState(true);
-    const [customerName,setCustomerName]=useState('');
-    const [firstName,setFirstName]=useState('');
-    const [lastName,setLastName]=useState('');
-    const [dishName,setDishName]=useState('');
-    const [orderedTime,setOrderedTime]=useState('');
-    const [customerToken,setCustomerToken]=useState('');
-    const [noPlates,setNoOfPlates]=useState(0);
-    const [notificationsData,setNotificationsData]=useState([]);
-    let formated;
-
-    const getCustomerName=(id)=>{
-            fetch(`http://${IP.ip}:3000/order/customerRecord/${id}`)
-            .then((response)=>response.json())
-            .then((response)=>{
-                setFirstName(response[0].firstname);
-                setLastName(response[0].lastname);
-            })
-            .catch((error)=>console.error(error))
-    }
-
-    const getDishName=(id)=>{
-        fetch(`http://${IP.ip}:3000/order/dishRecord/${id}`)
-        .then((response)=>response.json())
-        .then((response)=>{
-            console.log(response[0]);
-            setDishName(response[0].dish_name);        
-        })
-        .catch((error)=>console.error(error))
-}
     
-        const getOrderedTime=(id)=>{
-            fetch(`http://${IP.ip}:3000/order/time/${id}`)
-            .then((response)=>response.json())
-            .then((response)=>{
-                //console.log(response[0]);
-                setOrderedTime(response[0].time);
-                //formated=orderedTime.format("dd/mm/yyyy hh:MM:ss");  
-                //console.log(formated);      
-            })
-            .catch((error)=>console.error(error))
-        }
+    const [customerToken,setCustomerToken]=useState('');
+    const [notificationsData,setNotificationsData]=useState([]);
 
-        const getServingSize=(id)=>{
-            fetch(`http://${IP.ip}:3000/order/dishQuantity/${id}`)
-            .then((response)=>response.json())
-            .then((response)=>{
-                //console.log(response[0]);
-                setNoOfPlates(response[0].quantity);
-                //formated=orderedTime.format("dd/mm/yyyy hh:MM:ss");  
-                //console.log(formated);      
-            })
-            .catch((error)=>console.error(error))
-        }
-
-
+  
     useEffect(()=>{
         let recieverId='ExponentPushToken[-4WJz5C4pXrrGDKP9hB1hW]';
-        fetch(`http://${IP.ip}:3000/notifications/${recieverId}`)
+        fetch(`http://${IP.ip}:3000/notifications/chef/chefNotifications/${recieverId}`)
         .then((response)=>response.json())
-        .then((response)=>setNotificationsData(response))
-        .catch((error)=>console.error(error))
-        .finally(()=>setLoading(false));
+        .then((response)=>{
+            setNotificationsData(response);
+        })
+        .catch((error)=>console.error(error));
       },[]);
 
 
 
        const renderNotificationCard=(itemData)=>{
-            getCustomerName(itemData.item.order_id);
-            getDishName(itemData.item.order_id);
-            getOrderedTime(itemData.item.order_id);
-            getServingSize(itemData.item.order_id);
+           
         return(
             <NotificationCard notificationTitle="Hey, Come here Its order for you!!"
-            customerFname={firstName}
-            customerLname={lastName}
-            orderedDish={dishName}
-            timeOfOrder={orderedTime}
-            servingSize={noPlates}
+            customerFname={itemData.item.firstname}
+           // customerLname={lastName}
+            orderedDish={itemData.item.dish_name}
+            servingSize={itemData.item.quantity}
+            timeOfOrder={itemData.item.time}
             notSeen
             onSelect={()=>{
             fetch(`http://${IP.ip}:3000/notifications/order/${itemData.item.order_id}`)
@@ -134,7 +81,7 @@ const NotificationScreen=(props)=>{
         return(
             <View style={styles.container}>
             <View style={styles.kitchenContainer}>
-            <FlatList data={notificationsData} renderItem={renderNotificationCard} keyExtractor={(item)=>item.not_id}
+            <FlatList data={notificationsData} renderItem={renderNotificationCard} keyExtractor={(item)=>item.firstname}
             showsVerticalScrollIndicator={false}/>
             </View>
         </View>

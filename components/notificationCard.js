@@ -19,6 +19,7 @@ const  NotificationCard=props=>{
                 <Text style={{...styles.subTitle}}>Order Placed At</Text>
                 <Text style={{...styles.subTitle}}>{props.timeOfOrder}</Text>
                 </View>
+                
 
 
            
