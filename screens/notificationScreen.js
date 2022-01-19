@@ -67,7 +67,35 @@ const NotificationScreen=(props)=>{
                         body:"Kindly wait till delivery",  
                         experienceId: "@rehan.ali/customer-module-V1",
                     })
-                });
+                }).then(()=>console.log("Confirmation notification sent to Customer"))
+                .then(()=>{
+                        //send notification to Admin
+                fetch('https://exp.host/--/api/v2/push/send',{
+                    method:'POST',
+                    headers:{
+                        'Accept':'application/json',
+                        'Accept-Encoding':'gzip,deflate',
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify({
+                        to:'ExponentPushToken[jXY39COY1qo-vtkAP4_dnh]',
+                        data:{
+                            orderId:itemData.item.order_id,
+                            sender:'ExponentPushToken[-4WJz5C4pXrrGDKP9hB1hW]',
+                            reciever:customerToken,
+                            orderStatus:'confirmed'
+                        },
+                        title:`New Order Confirmed`,
+                        body:`New Order Confirmed Order Id: #${itemData.item.order_id}`,  
+                        experienceId: "@rehan.ali/Admin-module-app-V1",
+                    })
+                }).then(()=>{
+                    console.log("Notification Sent to Admin")
+                })
+                })
+
+
+
             })
             .then(()=>{console.log("Clicked Working")})
             .catch((error)=>console.error(error));  
@@ -81,7 +109,7 @@ const NotificationScreen=(props)=>{
         return(
             <View style={styles.container}>
             <View style={styles.kitchenContainer}>
-            <FlatList data={notificationsData} renderItem={renderNotificationCard} keyExtractor={(item)=>item.firstname}
+            <FlatList data={notificationsData} renderItem={renderNotificationCard} keyExtractor={(item)=>item.order_id}
             showsVerticalScrollIndicator={false}/>
             </View>
         </View>
