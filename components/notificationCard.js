@@ -23,7 +23,7 @@ const  NotificationCard=props=>{
 
 
            
-            {props.notSeen &&
+            {props.currentStatus==='pending' &&
             <View style={styles.btnContainer}>
             <TouchableOpacity>
                 <View style={{...styles.buttonContainer}}>

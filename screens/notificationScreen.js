@@ -1,10 +1,8 @@
 import React from "react";
-import { View,Text,StyleSheet, Button, FlatList, Dimensions,TouchableOpacity } from "react-native";
+import { View,Text,StyleSheet, Button, FlatList, Dimensions,TouchableOpacity,ToastAndroid } from "react-native";
 import Colors from '../constants/Colors';
 import { useEffect, useState } from "react";
 import NotificationCard from "../components/notificationCard";
-import * as Notifications from 'expo-notifications';
-import * as Permissions from 'expo-permissions';
 
 import IP from '../constants/IP';
 
@@ -14,20 +12,45 @@ const NotificationScreen=(props)=>{
     
     const [customerToken,setCustomerToken]=useState('');
     const [notificationsData,setNotificationsData]=useState([]);
+    const [ordersData,setOrdersData]=useState([]);
 
   
     useEffect(()=>{
         let recieverId='ExponentPushToken[-4WJz5C4pXrrGDKP9hB1hW]';
-        fetch(`http://${IP.ip}:3000/notifications/chef/chefNotifications/${recieverId}`)
+        let chefId='03154562292';
+        fetch(`http://${IP.ip}:3000/order/chefOrders/${chefId}`)
         .then((response)=>response.json())
         .then((response)=>{
-            setNotificationsData(response);
+            setOrdersData(response);
+        })
+        .then(()=>{
+            fetch(`http://${IP.ip}:3000/notifications/chef/chefNotifications/${recieverId}`)
+            .then((response)=>response.json())
+            .then((response)=>{
+                setNotificationsData(response);
+            })
         })
         .catch((error)=>console.error(error));
       },[]);
 
 
-
+      // Function to confirm the order
+      const updateOrderAsConfirmed=(orderId)=>{
+        let url=`http://${IP.ip}:3000/order/updateStatus/${orderId}`;
+        let data={
+            status:'confirmed',
+        }
+        fetch(url,{
+            method:'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+              },
+            body:JSON.stringify(data)
+        }).then((response)=>response.json())
+        .then(()=>ToastAndroid.show(`#${orderId} has been confirmed`, ToastAndroid.SHORT))
+        .catch((error)=>console.error(error))   
+      }
        const renderNotificationCard=(itemData)=>{
            
         return(
@@ -37,8 +60,9 @@ const NotificationScreen=(props)=>{
             orderedDish={itemData.item.dish_name}
             servingSize={itemData.item.quantity}
             timeOfOrder={itemData.item.time}
-            notSeen
+            currentStatus={itemData.item.status}
             onSelect={()=>{
+            updateOrderAsConfirmed(itemData.item.order_id);
             fetch(`http://${IP.ip}:3000/notifications/order/${itemData.item.order_id}`)
             .then((response)=>response.json())
             .then((response)=>{
@@ -109,7 +133,7 @@ const NotificationScreen=(props)=>{
         return(
             <View style={styles.container}>
             <View style={styles.kitchenContainer}>
-            <FlatList data={notificationsData} renderItem={renderNotificationCard} keyExtractor={(item)=>item.order_id}
+            <FlatList data={ordersData} renderItem={renderNotificationCard} keyExtractor={(item)=>item.order_id}
             showsVerticalScrollIndicator={false}/>
             </View>
         </View>
