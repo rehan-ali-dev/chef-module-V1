@@ -1,5 +1,5 @@
 import React from "react";
-import { View,Text,StyleSheet, Button, FlatList, Dimensions,TouchableOpacity,ToastAndroid } from "react-native";
+import { View,Text,StyleSheet, Button, FlatList, Dimensions,TouchableOpacity,ToastAndroid,Alert } from "react-native";
 import Colors from '../constants/Colors';
 import { useEffect, useState } from "react";
 import NotificationCard from "../components/notificationCard";
@@ -13,6 +13,8 @@ const NotificationScreen=(props)=>{
     const [customerToken,setCustomerToken]=useState('');
     const [notificationsData,setNotificationsData]=useState([]);
     const [ordersData,setOrdersData]=useState([]);
+    const [refreshing,setRefreshing]=useState(true);
+   
 
   
     useEffect(()=>{
@@ -30,12 +32,13 @@ const NotificationScreen=(props)=>{
                 setNotificationsData(response);
             })
         })
+        .then(()=>setRefreshing(false))
         .catch((error)=>console.error(error));
-      },[]);
+      },[refreshing]);
 
 
       // Function to confirm the order
-      const updateOrderAsConfirmed=(orderId)=>{
+      const updateOrderAsConfirmed=(orderId,dishName,quantity)=>{
         let url=`http://${IP.ip}:3000/order/updateStatus/${orderId}`;
         let data={
             status:'confirmed',
@@ -48,9 +51,21 @@ const NotificationScreen=(props)=>{
               },
             body:JSON.stringify(data)
         }).then((response)=>response.json())
+        .then(()=>showAlert(orderId,dishName,quantity))
+        .then(()=>setRefreshing(true))
         .then(()=>ToastAndroid.show(`#${orderId} has been confirmed`, ToastAndroid.SHORT))
         .catch((error)=>console.error(error))   
       }
+
+
+      const showAlert=(orderId,dishName,quantity)=>{
+        Alert.alert("Order Confirmed!",`Order# : ${orderId}\nDish Name : ${dishName}\nQuantity : ${quantity}\nOrder Status: Confirmed\n`,[{
+            text:'Okey!',
+            style:'cancel'
+        }]);
+    }
+
+
        const renderNotificationCard=(itemData)=>{
            
         return(
@@ -60,9 +75,11 @@ const NotificationScreen=(props)=>{
             orderedDish={itemData.item.dish_name}
             servingSize={itemData.item.quantity}
             timeOfOrder={itemData.item.time}
+            totalAmount={itemData.item.total_amount}
+            status={itemData.item.status}
             currentStatus={itemData.item.status}
             onSelect={()=>{
-            updateOrderAsConfirmed(itemData.item.order_id);
+            updateOrderAsConfirmed(itemData.item.order_id,itemData.item.dish_name,itemData.item.quantity);
             fetch(`http://${IP.ip}:3000/notifications/order/${itemData.item.order_id}`)
             .then((response)=>response.json())
             .then((response)=>{
