@@ -85,6 +85,8 @@ const OrdersScreen=(props)=>{
             servingSize={itemData.item.quantity}
             timeOfOrder={itemData.item.time}
             totalAmount={itemData.item.total_amount}
+            orderId={itemData.item.order_id}
+            forOrderScreen
             status={itemData.item.status}
             currentStatus={itemData.item.status}
             onSelect={()=>{

@@ -8,8 +8,16 @@ const  NotificationCard=props=>{
    
     return(
         <View style={styles.notificationCard}>
-                <Text style={styles.title}>{props.notificationTitle}</Text>
+                {props.forNotificationScreen && <View>
+                    <Text style={styles.title}>{props.notificationTitle}</Text>
                 <Text style={styles.subTitle}>{props.customerFname} {props.customerLname} wants to eat your {props.orderedDish}</Text>
+                    </View>}
+                {props.forOrderScreen &&
+                 <View>
+                <Text style={styles.title}>Order Id: #{props.orderId}</Text>
+                <Text style={styles.title}>{props.customerFname}{props.customerLname} wants to eat your {props.orderedDish}</Text>
+                </View>
+                }
                 <Text style={{...styles.title,color:Colors.primaryColor}}>Order Details</Text>
                 <View style={styles.notificationContainer}>
                 <Text style={{...styles.subTitle}}>{props.orderedDish}</Text>
@@ -28,9 +36,6 @@ const  NotificationCard=props=>{
                 <Text style={{...styles.subTitle}}>{props.timeOfOrder}</Text>
                 </View>
                 
-
-
-           
             {props.currentStatus==='pending' &&
             <View style={styles.btnContainer}>
             <TouchableOpacity>

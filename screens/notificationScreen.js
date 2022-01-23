@@ -78,6 +78,7 @@ const NotificationScreen=(props)=>{
             totalAmount={itemData.item.total_amount}
             status={itemData.item.status}
             currentStatus={itemData.item.status}
+            forNotificationScreen
             onSelect={()=>{
             updateOrderAsConfirmed(itemData.item.order_id,itemData.item.dish_name,itemData.item.quantity);
             fetch(`http://${IP.ip}:3000/notifications/order/${itemData.item.order_id}`)
