@@ -2,7 +2,10 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View,ToastAndroid } from 'react-native';
 import HomeNavigator from './navigation/chefBottomNavigator';
 import { useEffect } from 'react';
+import { combineReducers,createStore } from 'redux';
+import { Provider,useDispatch } from 'react-redux';
 import * as Notifications from 'expo-notifications';
+import orderReducer from './store/reducers/orderReducer';
 import IP from './constants/IP';
 
 
@@ -14,6 +17,13 @@ Notifications.setNotificationHandler({
     };
   }
 });
+
+const rootReducer=combineReducers({
+  order:orderReducer
+});
+
+const store=createStore(rootReducer);
+
 
 
 export default function App() {
@@ -71,7 +81,9 @@ export default function App() {
 
 
   return (
+    <Provider store={store}>
     <HomeNavigator/>
+    </Provider>
   );
 }
 

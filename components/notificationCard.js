@@ -9,34 +9,55 @@ const  NotificationCard=props=>{
     return(
         <View style={styles.notificationCard}>
                 {props.forNotificationScreen && <View>
+                    <Text style={styles.title}>Order Id: #{props.orderId}</Text>
                     <Text style={styles.title}>{props.notificationTitle}</Text>
-                <Text style={styles.subTitle}>{props.customerFname} {props.customerLname} wants to eat your {props.orderedDish}</Text>
+                    <Text style={{...styles.subTitle}}>{props.customerFname} Placed An Order At Your Kitchen</Text>
                     </View>}
                 {props.forOrderScreen &&
                  <View>
+                <View style={{width:'100%',flex:1,flexDirection:'row',justifyContent:'space-between'}}>
                 <Text style={styles.title}>Order Id: #{props.orderId}</Text>
-                <Text style={styles.title}>{props.customerFname}{props.customerLname} wants to eat your {props.orderedDish}</Text>
+                <TouchableOpacity onPress={props.onViewDetails}>
+                <Text style={{...styles.title,color:Colors.primaryColor,textDecorationLine:'underline'}}>View Details</Text>
+                </TouchableOpacity>
+                </View>
+                {/*<Text style={styles.title}>{props.customerFname}{props.customerLname} wants to eat your {props.orderedDish}</Text>*/}
+                <Text style={styles.title}>New Order For You</Text>
                 </View>
                 }
-                <Text style={{...styles.title,color:Colors.primaryColor}}>Order Details</Text>
-                <View style={styles.notificationContainer}>
-                <Text style={{...styles.subTitle}}>{props.orderedDish}</Text>
-                <Text style={{...styles.subTitle}}>{props.servingSize} Person</Text>
-                </View>
+                {props.forNotificationScreen && 
+                <View>
+               
+                
                 <View style={styles.notificationContainer}>
                 <Text style={{...styles.subTitle}}>Total Amount</Text>
                 <Text style={{...styles.subTitle}}>{props.totalAmount}</Text>
                 </View>
+                </View>
+                }
                 <View style={styles.notificationContainer}>
                 <Text style={{...styles.subTitle}}>Order Status</Text>
                 <Text style={{...styles.subTitle}}>{props.status}</Text>
                 </View>
+                {props.forOrderScreen &&
                 <View style={styles.notificationContainer}>
                 <Text style={{...styles.subTitle}}>Order Placed At</Text>
                 <Text style={{...styles.subTitle}}>{props.timeOfOrder}</Text>
                 </View>
+                }
                 
             {props.currentStatus==='pending' &&
+            <View>
+            {props.forNotificationScreen &&
+            <View style={styles.btnContainer}>
+            <TouchableOpacity onPress={props.onDetail}>
+            <View style={{...styles.buttonContainer,width:100}}>
+                <Text style={styles.btnTitle}>View Details</Text>
+            </View>
+            </TouchableOpacity>
+            </View>
+            }
+            {props.forOrderScreen &&
             <View style={styles.btnContainer}>
             <TouchableOpacity>
                 <View style={{...styles.buttonContainer}}>
@@ -48,6 +69,8 @@ const  NotificationCard=props=>{
                     <Text style={styles.btnTitle}>Confirm</Text>
                 </View>
             </TouchableOpacity>
+            </View>
+            }
             </View>
             }
         </View>

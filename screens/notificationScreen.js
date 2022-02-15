@@ -37,112 +37,20 @@ const NotificationScreen=(props)=>{
       },[refreshing]);
 
 
-      // Function to confirm the order
-      const updateOrderAsConfirmed=(orderId,dishName,quantity)=>{
-        let url=`http://${IP.ip}:3000/order/updateStatus/${orderId}`;
-        let data={
-            status:'confirmed',
-        }
-        fetch(url,{
-            method:'PUT',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-              },
-            body:JSON.stringify(data)
-        }).then((response)=>response.json())
-        .then(()=>showAlert(orderId,dishName,quantity))
-        .then(()=>setRefreshing(true))
-        .then(()=>ToastAndroid.show(`#${orderId} has been confirmed`, ToastAndroid.SHORT))
-        .catch((error)=>console.error(error))   
-      }
-
-
-      const showAlert=(orderId,dishName,quantity)=>{
-        Alert.alert("Order Confirmed!",`Order# : ${orderId}\nDish Name : ${dishName}\nQuantity : ${quantity}\nOrder Status: Confirmed\n`,[{
-            text:'Okey!',
-            style:'cancel'
-        }]);
-    }
-
-
-       const renderNotificationCard=(itemData)=>{
-           
+       const renderNotificationCard=(itemData)=>{      
         return(
             <NotificationCard notificationTitle="Hey, Come here Its order for you!!"
             customerFname={itemData.item.firstname}
-           // customerLname={lastName}
-            orderedDish={itemData.item.dish_name}
-            servingSize={itemData.item.quantity}
-            timeOfOrder={itemData.item.time}
+            orderId={itemData.item.order_id}
             totalAmount={itemData.item.total_amount}
             status={itemData.item.status}
             currentStatus={itemData.item.status}
             forNotificationScreen
-            onSelect={()=>{
-            updateOrderAsConfirmed(itemData.item.order_id,itemData.item.dish_name,itemData.item.quantity);
-            fetch(`http://${IP.ip}:3000/notifications/order/${itemData.item.order_id}`)
-            .then((response)=>response.json())
-            .then((response)=>{
-            setCustomerToken(response[0].sender);
-            console.log("%%%%%%%%%%%%%%%%%%");
-            console.log(customerToken);
-            })
-            .then(()=>{
-                console.log("Fetching.........");
-                fetch('https://exp.host/--/api/v2/push/send',{
-                    method:'POST',
-                    headers:{
-                        'Accept':'application/json',
-                        'Accept-Encoding':'gzip,deflate',
-                        'Content-Type':'application/json'
-                    },
-                    body: JSON.stringify({
-                        to:customerToken,
-                        data:{
-                            sender:'ExponentPushToken[-4WJz5C4pXrrGDKP9hB1hW]',
-                            reciever:customerToken,
-                            orderId:itemData.item.order_id,
-                            status:false
-                        },
-                        title:'Chef Confirm Your Order',
-                        body:"Kindly wait till delivery",  
-                        experienceId: "@rehan.ali/customer-module-V1",
-                    })
-                }).then(()=>console.log("Confirmation notification sent to Customer"))
-                .then(()=>{
-                        //send notification to Admin
-                fetch('https://exp.host/--/api/v2/push/send',{
-                    method:'POST',
-                    headers:{
-                        'Accept':'application/json',
-                        'Accept-Encoding':'gzip,deflate',
-                        'Content-Type':'application/json'
-                    },
-                    body: JSON.stringify({
-                        to:'ExponentPushToken[jXY39COY1qo-vtkAP4_dnh]',
-                        data:{
-                            orderId:itemData.item.order_id,
-                            sender:'ExponentPushToken[-4WJz5C4pXrrGDKP9hB1hW]',
-                            reciever:customerToken,
-                            orderStatus:'confirmed'
-                        },
-                        title:`New Order Confirmed`,
-                        body:`New Order Confirmed Order Id: #${itemData.item.order_id}`,  
-                        experienceId: "@rehan.ali/Admin-module-app-V1",
-                    })
-                }).then(()=>{
-                    console.log("Notification Sent to Admin")
+            onDetail={()=>{
+                props.navigation.navigate({
+                    routeName:'Orders',                
                 })
-                })
-
-
-
-            })
-            .then(()=>{console.log("Clicked Working")})
-            .catch((error)=>console.error(error));  
-
-            }}
+            }}         
            />
            )
        }
