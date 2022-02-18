@@ -17,6 +17,7 @@ const OrdersScreen=(props)=>{
 
    
     const [customerToken,setCustomerToken]=useState('');
+    const [notificationData,setNotificationData]=useState([]);
     const [ordersData,setOrdersData]=useState([]);
     const [refreshing,setRefreshing]=useState(false);
     const [showModal,setShowModal]=useState(false);
@@ -91,10 +92,14 @@ const OrdersScreen=(props)=>{
             updateOrderAsConfirmed(itemData.item.order_id);
             fetch(`http://${IP.ip}:3000/notifications/order/${itemData.item.order_id}`)
             .then((response)=>response.json())
+           // .then((response)=>setNotificationData(response))
+           // .then(()=>console.log(notificationData))
+            
             .then((response)=>{
+            console.log(response);
             setCustomerToken(response[0].sender);
-            console.log("%%%%%%%%%%%%%%%%%%");
             console.log(customerToken);
+            console.log("%%%%%%%%%%%%%%%%%%");
             })
             .then(()=>{
                 console.log("Fetching.........");

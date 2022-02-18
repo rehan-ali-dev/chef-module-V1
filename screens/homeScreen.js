@@ -53,7 +53,6 @@ const HomeScreen=(props)=>{
         })
         
         .then(()=>setRefreshing(false))
-       
         .catch((error)=>console.error(error))
        
       },[refreshing]);

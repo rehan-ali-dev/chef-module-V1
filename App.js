@@ -43,6 +43,8 @@ export default function App() {
         console.log(notification);
         console.log("#########################3");
         let senderToken=notification.request.content.data.sender;
+        console.log("///// Sender Token is //////////");
+        console.log(senderToken);
         let recieverToken=notification.request.content.data.reciever;
         let orderId=notification.request.content.data.orderId;
         let status=notification.request.content.data.status;

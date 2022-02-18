@@ -1,6 +1,7 @@
 import React from "react";
-import { View,Text,StyleSheet, Button, FlatList, Dimensions,TouchableOpacity,Picker,TextInput,ScrollView,ToastAndroid } from "react-native";
+import { View,Text,StyleSheet, Button, FlatList, Dimensions,Image,TouchableOpacity,Picker,TextInput,ScrollView,ToastAndroid } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
+import * as ImagePicker from 'expo-image-picker';
 import Colors from '../constants/Colors';
 import Textarea from "react-native-textarea";
 import { useEffect, useState } from "react";
@@ -18,6 +19,8 @@ const AddDisheScreen=()=>{
     const [dishPrice,setDishPrice]=useState('');
     const [description,setDescription]=useState('');
     const [imageUrl,setImageUrl]=useState('');
+    const [image, setImage] = useState(null);
+    const [imagePath,setImagePath]=useState('');
     const [token,setToken]=useState('');
     
     const [isNameFocused,setNameFocused]=useState(false);
@@ -34,21 +37,7 @@ const AddDisheScreen=()=>{
     //let token;
 
     useEffect(()=>{
-      Permissions.getAsync(Permissions.NOTIFICATIONS)
-      .then((statusObj)=>{
-        if(statusObj.status!=='granted'){
-          return Permissions.askAsync(Permissions.NOTIFICATIONS);
-        }
-        return statusObj;  
-      })
-      .then((statusObj)=>{
-        if(statusObj.status!=='granted'){
-          throw new Error('Permission not granted');
-        }
-      })
-      .then(()=>{
-         return Notifications.getExpoPushTokenAsync();
-      })
+      Notifications.getExpoPushTokenAsync()
       .then(response=>{
         console.log(response);
         setToken(response.data);
@@ -72,6 +61,50 @@ const AddDisheScreen=()=>{
       })
     }
 
+    const pickImage = async () => {
+      // No permissions request is necessary for launching the image library
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+  
+      console.log(result);
+  
+      if (!result.cancelled) {
+        setImage(result.uri);
+      }
+    };
+
+
+    const uploadDishImage=async ()=>{
+      const url=`http://${IP.ip}:3000/uploadImage`
+      const formData=new FormData();
+      formData.append('upload',{
+        name:dishName,
+        uri:image,
+        type:'image/jpg'
+      })
+
+     await fetch(url,{
+        method:'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data'
+          },
+        body:formData
+    })
+    .then((response)=>response.json())
+    .then((response)=>{
+        setImagePath(response.path);
+        console.log(response);
+        })
+    
+    .catch((error)=>console.log(error));
+    }
+  
+
 
 
     const addNewDish=()=>{
@@ -83,7 +116,8 @@ const AddDisheScreen=()=>{
           categoryName:selectedCategory,
           price:parseInt(dishPrice),
           description:description,
-          imageUrl:imageUrl,
+          //imageUrl:imageUrl,
+          imageUrl:imagePath,
           cuisine:selectedCuisine,
           servingSize:selectedServing,
           status:true,
@@ -103,6 +137,9 @@ const AddDisheScreen=()=>{
           console.log(response);
           })
       .then(()=>ToastAndroid.show(`Dish Added Successfully`, ToastAndroid.SHORT))
+      .then(()=>{
+        navigation.goBack();
+      })
       .catch((error)=>console.log(error));
 
   }
@@ -127,13 +164,17 @@ const AddDisheScreen=()=>{
         style={{height:30,width: '100%'}}
         onValueChange={(itemValue, itemIndex) => setSelectedCuisine(itemValue)}
       >
+        {/*
+        //['Pakistani','Hyderabadi','BBQ','Afghani','Indian','Arabic','Chinese','Turkish']
+        */}
         <Picker.Item label="Select Cuisine" value=" " disabled={true}/>
         <Picker.Item label="Pakistani" value="Pakistani" />
         <Picker.Item label="BBQ" value="BBQ" />
         <Picker.Item label="Hyderabadi" value="Hyderabadi" />
-        <Picker.Item label="Italian" value="Italian" />
-        <Picker.Item label="Sindhi" value="Sindhi" />
-        <Picker.Item label="Dessert" value="Dessert" />
+        <Picker.Item label="Afghani" value="Afghani" />
+        <Picker.Item label="Indian" value="Indian" />
+        <Picker.Item label="Chinese" value="Chinese"/>
+        <Picker.Item label="Turkish" value="Turkish"/>
       </Picker>
             </View>
         
@@ -145,6 +186,7 @@ const AddDisheScreen=()=>{
         style={{height:30,width: '100%' }}
         onValueChange={(itemValue, itemIndex) => setSelectedCategory(itemValue)}
       >
+        <Picker.Item label="Select Category" value=" " disabled={true}/>
         <Picker.Item label="Break Fast" value="Break Fast" />
         <Picker.Item label="Lunch" value="Lunch" />
         <Picker.Item label="Dinner" value="Dinner" />
@@ -192,19 +234,37 @@ const AddDisheScreen=()=>{
 </View>
 
             <View style={styles.inputTitles
-            }><Text style={styles.inputHeader}>Image</Text></View>    
+            }><Text style={styles.inputHeader}>Image</Text></View>
+            {/**  
             <TextInput style={{...styles.inputText,borderColor:isDescFocused?Colors.primaryColor:'#F5FCFF',
             borderWidth:isDescFocused?1:0,}} multiline={true} placeholder="Image Url" onFocus={handleDescFocus} onBlur={handleDescBlur}
             value={imageUrl} onChangeText={(text)=>setImageUrl(text)}
-            />
-
-<View style={styles.btnContainer}>
+            />*/}   
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+             {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+             <View style={styles.buttonsContainer}>
+             <TouchableOpacity onPress={pickImage}>
+                    <View style={styles.btnContainer}>
+                    <Text style={styles.btnTitle}>Choose Image</Text>
+                    </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={uploadDishImage}>
+                <View style={styles.btnContainer}>
+                    <Text style={styles.btnTitle}>Save</Text>
+                </View>
+            </TouchableOpacity>
+             </View>
+            <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={addNewDish}>
-                <View style={styles.buttonContainer}>
+                <View style={styles.btnContainer}>
                     <Text style={styles.btnTitle}>Submit</Text>
                 </View>
             </TouchableOpacity>
             </View>
+            </View>
+            
+           
+           
 
 </ScrollView>
              </View>
@@ -253,23 +313,27 @@ const styles=StyleSheet.create(
             fontSize:16
         },
         buttonContainer:{
-            flexDirection:'row',
-            backgroundColor:Colors.primaryColor,
-            width:160,
-            justifyContent:'center',
-            alignItems:'center',
-            padding:5,
-            borderRadius:20,
+  
+            width:180,
+            flex:1,
+            padding:10,
+            
             
         },
         btnContainer:{
-            paddingTop:10,
-            marginVertical:10,
-            justifyContent:'center',
+           flex:1,
+            backgroundColor:Colors.primaryColor,
+            padding:5,
+            borderRadius:10,
             alignItems:'center'
-           
             
-            
+        },
+        buttonsContainer:{
+          flex:1,
+          flexDirection:'row',
+          paddingTop:10,
+          width:'50%',
+          justifyContent:'space-between'
         },
         btnTitle:{
             color:Colors.whiteColor,
