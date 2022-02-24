@@ -59,7 +59,7 @@ const  NotificationCard=props=>{
             }
             {props.forOrderScreen &&
             <View style={styles.btnContainer}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={props.onCancel}>
                 <View style={{...styles.buttonContainer}}>
                     <Text style={styles.btnTitle}>Cancel</Text>
                 </View>

@@ -1,5 +1,6 @@
 import { GET_ORDER_DETAILS,GET_ORDER_DATA,
-    UPDATE_ORDER_STATUS,GET_ORDER_COUNTS,UPDATE_ORDER_COUNTS
+    UPDATE_ORDER_STATUS,GET_ORDER_COUNTS,UPDATE_ORDER_COUNTS,
+    GET_DISHES,ADD_DISH,EDIT_DISH
  } from "../actions/orderActions";
 
 import IP from "../../constants/IP";
@@ -9,6 +10,7 @@ import IP from "../../constants/IP";
 
 const initialState={
     Orders:[],
+    Dishes:[],
     OrderDetails:[],
     OrdersCounts:{
         totalOrders:0,
@@ -29,11 +31,17 @@ const orderReducer=(state=initialState,action)=>{
         case GET_ORDER_COUNTS:
             return {...state,OrdersCounts:action.orderCounts};
         
+        case GET_DISHES:
+            return {...state,Dishes:action.dishes};
+
+        case ADD_DISH:
+            return {...state,Dishes:state.Dishes.concat(action.newDish)}
+        
         case UPDATE_ORDER_STATUS:
             const ifSelected=state.Orders.findIndex(order=>order.order_id===action.orderId);
                 if(ifSelected>=0){
                     let selectedOrder=state.Orders[ifSelected];
-                    selectedOrder.status='confirmed';
+                    selectedOrder.status=action.status;
                     const ordersData=[...state.Orders];
                     ordersData.splice(ifSelected, 1,selectedOrder);
                     return {...state,Orders:ordersData};
@@ -50,6 +58,9 @@ const orderReducer=(state=initialState,action)=>{
                     }
                     else if(action.orderStatus==='delivered'){
                         counts.deliveredCounts=counts.deliveredCounts+1;
+                    }
+                    else if(action.orderStatus==='cancelled'){
+                        counts.pendingCounts=counts.pendingCounts-1;
                     }
                     return {...state,OrdersCounts:counts};
                  

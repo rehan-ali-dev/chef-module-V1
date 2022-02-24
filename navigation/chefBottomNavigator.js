@@ -18,6 +18,7 @@ import ProfileScreen from '../screens/profileScreen';
 import DishesScreen from '../screens/dishesScreen';
 import PaymentsScreen from '../screens/paymentsScreen';
 import AddDisheScreen from '../screens/addDishScreen';
+import DishDetailScreen from '../screens/dishDetailScreen';
 import NotificationScreen from '../screens/notificationScreen';
 
 const defaultNavConfiguration= {
@@ -48,6 +49,7 @@ const DishesNavigator=createStackNavigator(
     {    
         Dishes:DishesScreen,
         AddDish: AddDisheScreen,
+        DishDetail:DishDetailScreen,
     },defaultNavConfiguration
 );
 

@@ -5,6 +5,8 @@ import * as ImagePicker from 'expo-image-picker';
 import Colors from '../constants/Colors';
 import Textarea from "react-native-textarea";
 import { useEffect, useState } from "react";
+import { useDispatch,useSelector } from "react-redux";
+import { addDish } from "../store/actions/orderActions";
 import { Ionicons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions'; 
@@ -26,6 +28,8 @@ const AddDisheScreen=()=>{
     const [isNameFocused,setNameFocused]=useState(false);
     const [isPriceFocused,setPriceFocused]=useState(false);
     const [isDescFocused,setDescFocused]=useState(false);
+
+    const dispatch=useDispatch();
 
     const handleNameFocus=()=>setNameFocused(true);
     const handlePriceFocus=()=> setPriceFocused(true);
@@ -134,11 +138,25 @@ const AddDisheScreen=()=>{
           body:JSON.stringify(data)
       }).then((response)=>response.json())
       .then((response)=>{
-          console.log(response);
-          })
+        insertedId=response.insertId;
+        const NewDish={
+                dish_id:insertedId,
+                dish_name:dishName,
+                cat_name:selectedCategory,
+                price:dishPrice,
+                description:description,
+                image:imagePath,
+                cuisine:selectedCuisine,
+                serving_size:selectedServing,
+                status:true,
+                kitchen_name:"Bisma Ka Kitchen",
+                push_token:token,
+            }
+        dispatch(addDish(NewDish));
+      })
       .then(()=>ToastAndroid.show(`Dish Added Successfully`, ToastAndroid.SHORT))
       .then(()=>{
-        navigation.goBack();
+        props.navigation.goBack();
       })
       .catch((error)=>console.log(error));
 

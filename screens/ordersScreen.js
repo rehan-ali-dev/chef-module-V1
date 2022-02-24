@@ -55,17 +55,39 @@ const OrdersScreen=(props)=>{
               },
             body:JSON.stringify(data)
         }).then((response)=>response.json())
-        .then(()=>showAlert(orderId))
+        .then(()=>showAlert(orderId,"Order Confirmed!"))
         .then(()=>dispatch(updateOrderCounts('confirmed')))
-        .then(()=>dispatch(updateOrderStatus(orderId)))
+        .then(()=>dispatch(updateOrderStatus(orderId,'confirmed')))
+        
+        //.then(()=>setRefreshing(true))
+        .catch((error)=>console.error(error))   
+      }
+
+      // Function to confirm the order
+      const updateOrderAsCancelled=(orderId)=>{
+        let url=`http://${IP.ip}:3000/order/updateStatus/${orderId}`;
+        let data={
+            status:'cancelled',
+        }
+        fetch(url,{
+            method:'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+              },
+            body:JSON.stringify(data)
+        }).then((response)=>response.json())
+        .then(()=>showAlert(orderId,"Order Cancelled!"))
+        .then(()=>dispatch(updateOrderCounts('cancelled')))
+        .then(()=>dispatch(updateOrderStatus(orderId,'cancelled')))
         
         //.then(()=>setRefreshing(true))
         .catch((error)=>console.error(error))   
       }
 
 
-      const showAlert=(orderId)=>{
-        Alert.alert("Order Confirmed!",`Order# : ${orderId}\nCustomer Name : ${customerData.firstname} ${customerData.lastname}\nTotal Items : ${items.map(item => item.quantity).reduce((prev, curr) => prev + curr, 0)}\nTotal Amount : ${items.map(item => item.total_amount).reduce((prev, curr) => prev + curr, 0)}\nOrder Status: Confirmed\n`,[{
+      const showAlert=(orderId,title)=>{
+        Alert.alert(`${title}`,`Order# : ${orderId}\nCustomer Name : ${customerData.firstname} ${customerData.lastname}\nTotal Items : ${items.map(item => item.quantity).reduce((prev, curr) => prev + curr, 0)}\nTotal Amount : ${items.map(item => item.total_amount).reduce((prev, curr) => prev + curr, 0)}\nOrder Status: Confirmed\n`,[{
             text:'Okey!',
             style:'cancel'
         }]);
@@ -142,6 +164,72 @@ const OrdersScreen=(props)=>{
                         },
                         title:`New Order Confirmed`,
                         body:`New Order Confirmed Order Id: #${itemData.item.order_id}`,  
+                        experienceId: "@rehan.ali/Admin-module-app-V1",
+                    })
+                }).then(()=>{
+                    console.log("Notification Sent to Admin")
+                })
+                })
+            })
+            .then(()=>{console.log("Clicked Working")})
+            .catch((error)=>console.error(error));  
+           }}
+
+
+
+           onCancel={()=>{
+            updateOrderAsCancelled(itemData.item.order_id);
+            fetch(`http://${IP.ip}:3000/notifications/order/${itemData.item.order_id}`)
+            .then((response)=>response.json())
+           // .then((response)=>setNotificationData(response))
+           // .then(()=>console.log(notificationData)) 
+            .then((response)=>{
+            console.log(response);
+            setCustomerToken(response[0].sender);
+            console.log(customerToken);
+            console.log("%%%%%%%%%%%%%%%%%%");
+            })
+            .then(()=>{
+                console.log("Fetching.........");
+                fetch('https://exp.host/--/api/v2/push/send',{
+                    method:'POST',
+                    headers:{
+                        'Accept':'application/json',
+                        'Accept-Encoding':'gzip,deflate',
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify({
+                        to:customerToken,
+                        data:{
+                            sender:'ExponentPushToken[-4WJz5C4pXrrGDKP9hB1hW]',
+                            reciever:customerToken,
+                            orderId:itemData.item.order_id,
+                            status:false
+                        },
+                        title:"Sorry, We Cant't Serve You",
+                        body:"Chef Cancelled Your Order",  
+                        experienceId: "@rehan.ali/customer-module-V1",
+                    })
+                }).then(()=>console.log("Confirmation notification sent to Customer"))
+                .then(()=>{
+                        //send notification to Admin
+                fetch('https://exp.host/--/api/v2/push/send',{
+                    method:'POST',
+                    headers:{
+                        'Accept':'application/json',
+                        'Accept-Encoding':'gzip,deflate',
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify({
+                        to:'ExponentPushToken[jXY39COY1qo-vtkAP4_dnh]',
+                        data:{
+                            orderId:itemData.item.order_id,
+                            sender:'ExponentPushToken[-4WJz5C4pXrrGDKP9hB1hW]',
+                            reciever:customerToken,
+                            orderStatus:'cancelled'
+                        },
+                        title:`Chef Cancelled The Order`,
+                        body:`Order Cancelled Order Id: #${itemData.item.order_id}`,  
                         experienceId: "@rehan.ali/Admin-module-app-V1",
                     })
                 }).then(()=>{
