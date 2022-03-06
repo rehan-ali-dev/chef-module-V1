@@ -16,6 +16,7 @@ import {
 } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import * as ImagePicker from "expo-image-picker"
+import { useSelector } from "react-redux"
 import Colors from "../constants/Colors"
 import IP from "../constants/IP"
 
@@ -33,8 +34,11 @@ const ProfileScreen = (props) => {
       );
      const [kitchenDetail,setKitchenDetail]=useState({});
 
+     const chefDetail=useSelector(state=>state.order.chefDetails);
+
     useEffect(()=>{
-        const chefId='03154562292';
+        //const chefId='03154562292';
+        const chefId=chefDetail.chef_id;
         fetch(`http://${IP.ip}:3000/kitchen/kitchenDetail/${chefId}`)
         .then((response)=>response.json())
         .then((response)=>setKitchenDetail(response[0]))
@@ -59,7 +63,7 @@ const ProfileScreen = (props) => {
         <View style={styles.profilecontainer}>
           <View style={styles.profileview}>
 
-            <ImageBackground source={{ uri: image }} style={styles.image}>
+            <ImageBackground source={{ uri: image?image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt_NZykul07nU3cliFuRZQr4_q-gOdkRTmRA&usqp=CAU" }} style={styles.image}>
             </ImageBackground>
           </View>
 
@@ -92,8 +96,6 @@ const ProfileScreen = (props) => {
         <Text style={styles.fieldsname}>Address</Text>
         <Text style={{...styles.kitchenname,fontSize:14,color:Colors.lightBlack}}>{address}</Text>
 
-
-        
        
         {/* //time picker   */}
 

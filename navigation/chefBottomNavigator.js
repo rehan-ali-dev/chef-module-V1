@@ -1,4 +1,4 @@
-import { createAppContainer } from 'react-navigation';
+import { createAppContainer,createSwitchNavigator } from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
@@ -20,6 +20,8 @@ import PaymentsScreen from '../screens/paymentsScreen';
 import AddDisheScreen from '../screens/addDishScreen';
 import DishDetailScreen from '../screens/dishDetailScreen';
 import NotificationScreen from '../screens/notificationScreen';
+import LoginScreen from '../screens/loginScreen';
+import OTPScreen from '../screens/otpTakingScreen';
 
 const defaultNavConfiguration= {
     //set Default Configuration
@@ -111,6 +113,12 @@ const navigationConfiguration={
     }
 }
 
+const AuthNavigator=createStackNavigator(
+    {  
+        Login:LoginScreen,
+        OTP:OTPScreen
+    },defaultNavConfiguration
+)
 
 
 const ChefBottomNavigator=Platform.OS === 'android'
@@ -131,5 +139,10 @@ const ChefBottomNavigator=Platform.OS === 'android'
        } 
    });
 
+const MainNavigator=createSwitchNavigator({
+    Auth:AuthNavigator,
+    MainHome:ChefBottomNavigator
+})
 
-export default createAppContainer(ChefBottomNavigator);
+
+export default createAppContainer(MainNavigator);

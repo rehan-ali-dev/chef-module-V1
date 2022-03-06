@@ -2,6 +2,7 @@ import React from "react";
 import { View,Text,StyleSheet, Button, FlatList, Dimensions,TouchableOpacity,ToastAndroid,Alert } from "react-native";
 import Colors from '../constants/Colors';
 import { useEffect, useState } from "react";
+import { useDispatch,useSelector } from "react-redux";
 import NotificationCard from "../components/notificationCard";
 
 import IP from '../constants/IP';
@@ -14,12 +15,14 @@ const NotificationScreen=(props)=>{
     const [notificationsData,setNotificationsData]=useState([]);
     const [ordersData,setOrdersData]=useState([]);
     const [refreshing,setRefreshing]=useState(true);
+    const chefDetail=useSelector(state=>state.order.chefDetails);
    
 
   
     useEffect(()=>{
         let recieverId='ExponentPushToken[-4WJz5C4pXrrGDKP9hB1hW]';
-        let chefId='03154562292';
+        //let chefId='03154562292';
+        let chefId=chefDetail.chef_id;
         fetch(`http://${IP.ip}:3000/order/chefOrders/${chefId}`)
         .then((response)=>response.json())
         .then((response)=>{

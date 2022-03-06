@@ -1,5 +1,6 @@
 import React from "react";
-import { View,Text,StyleSheet, Button, FlatList, Dimensions,Image,TouchableOpacity,Picker,TextInput,ScrollView,ToastAndroid } from "react-native";
+import { View,Text,StyleSheet, Button, FlatList, Dimensions,Image,TouchableOpacity,TextInput,ScrollView,ToastAndroid } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import DropDownPicker from "react-native-dropdown-picker";
 import * as ImagePicker from 'expo-image-picker';
 import Colors from '../constants/Colors';
@@ -13,7 +14,7 @@ import * as Permissions from 'expo-permissions';
 import IP from "../constants/IP";
 
 
-const AddDisheScreen=()=>{
+const AddDisheScreen=(props)=>{
     const [dishName,setDishName]=useState('');
     const [selectedCategory,setSelectedCategory]=useState("");
     const [selectedCuisine,setSelectedCuisine]=useState("none");
@@ -28,6 +29,11 @@ const AddDisheScreen=()=>{
     const [isNameFocused,setNameFocused]=useState(false);
     const [isPriceFocused,setPriceFocused]=useState(false);
     const [isDescFocused,setDescFocused]=useState(false);
+    const [isLoading,setLoading]=useState(true);
+    const [kitchenData,setKitchenData]=useState([]);
+
+
+    const chefDetail=useSelector(state=>state.order.chefDetails);
 
     const dispatch=useDispatch();
 
@@ -51,6 +57,17 @@ const AddDisheScreen=()=>{
         return null;
       })
     },[]);
+
+    useEffect(()=>{
+      const chefIdd=chefDetail.chef_id;
+      console.log(chefIdd);
+      console.log("//////////////////////")
+      fetch(`http://${IP.ip}:3000/kitchen/chef/${chefIdd}`)
+        .then((response)=>response.json())
+        .then((response)=>setKitchenData(response[0]))
+        .then(()=>console.log(kitchenData))
+        .then(()=>setLoading(false))
+    },[isLoading])
 
 
     const triggerNotifications=()=>{
@@ -125,7 +142,7 @@ const AddDisheScreen=()=>{
           cuisine:selectedCuisine,
           servingSize:selectedServing,
           status:true,
-          kitchenName:"Bisma Ka Kitchen",
+          kitchenName:kitchenData.kitchen_name,
           pushToken:token
 
       }
@@ -149,7 +166,7 @@ const AddDisheScreen=()=>{
                 cuisine:selectedCuisine,
                 serving_size:selectedServing,
                 status:true,
-                kitchen_name:"Bisma Ka Kitchen",
+                kitchen_name:kitchenData.kitchen_name,
                 push_token:token,
             }
         dispatch(addDish(NewDish));

@@ -1,6 +1,7 @@
 import { GET_ORDER_DETAILS,GET_ORDER_DATA,
     UPDATE_ORDER_STATUS,GET_ORDER_COUNTS,UPDATE_ORDER_COUNTS,
-    GET_DISHES,ADD_DISH,EDIT_DISH
+    GET_DISHES,ADD_DISH,EDIT_DISH,
+    GET_CHEF_DETAILS
  } from "../actions/orderActions";
 
 import IP from "../../constants/IP";
@@ -11,6 +12,7 @@ import IP from "../../constants/IP";
 const initialState={
     Orders:[],
     Dishes:[],
+    chefDetails:[],
     OrderDetails:[],
     OrdersCounts:{
         totalOrders:0,
@@ -28,6 +30,9 @@ const orderReducer=(state=initialState,action)=>{
         case GET_ORDER_DETAILS:
             return {...state,OrderDetails:action.orderDetails};
         
+        case GET_CHEF_DETAILS:
+            return {...state,chefDetails:action.chef};
+              
         case GET_ORDER_COUNTS:
             return {...state,OrdersCounts:action.orderCounts};
         

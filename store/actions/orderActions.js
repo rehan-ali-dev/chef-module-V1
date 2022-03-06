@@ -1,5 +1,6 @@
 export const GET_ORDER_DATA='GET_ORDER_DATA';
 export const GET_ORDER_DETAILS='GET_ORDER_DETAILS';
+export const GET_CHEF_DETAILS='GET_CHEF_DETAILS';
 export const UPDATE_ORDER_STATUS='UPDATE_ORDER_STATUS';
 export const GET_ORDER_COUNTS='GET_ORDER_COUNTS';
 export const UPDATE_ORDER_COUNTS='UPDATE_ORDER_COUNTS';
@@ -14,6 +15,10 @@ export const getOrderData=(items)=>{
 
 export const getDishes=(items)=>{
     return{type:GET_DISHES,dishes:items};
+}
+
+export const getChefDetail=(item)=>{
+    return{type:GET_CHEF_DETAILS,chef:item};
 }
 
 export const addDish=(item)=>{

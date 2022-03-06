@@ -16,10 +16,13 @@ const DishesScreen=(props)=>{
 
     const dispatch=useDispatch();
     const dishesRecord=useSelector(state=>state.order.Dishes);
+    const chefDetail=useSelector(state=>state.order.chefDetails);
 
     useEffect(()=>{
-        const kitchen='Bisma Ka Kitchen';
-        fetch(`http://${IP.ip}:3000/dish/kitchen/${kitchen}`)
+
+        //const kitchen='Bisma Ka Kitchen';
+        const chefId=chefDetail.chef_id;
+        fetch(`http://${IP.ip}:3000/dish/chef/${chefId}`)
         .then((response)=>response.json())
         .then((response)=>setDishesData(response))
         .then(()=>dispatch(getDishes(dishesData)))

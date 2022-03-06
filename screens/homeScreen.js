@@ -22,6 +22,7 @@ const HomeScreen=(props)=>{
     const [refreshing,setRefreshing]=useState(true);
 
     const totalOrdersCounts=useSelector(state=>state.order.OrdersCounts);
+    const chefDetail=useSelector(state=>state.order.chefDetails);
     const ordersData=useSelector(state=>state.order.Orders);
     const dispatch=useDispatch();
 
@@ -33,7 +34,8 @@ const HomeScreen=(props)=>{
 
         
     useEffect(()=>{
-        const chefId='03154562292';
+        //const chefId='03154562292';
+        const chefId=chefDetail.chef_id;
         fetch(`http://${IP.ip}:3000/orderCounts/counts/${chefId}`)
         .then((response)=>response.json())
         .then((response)=>setOrderCountsDetails(response[0]))
@@ -60,7 +62,7 @@ const HomeScreen=(props)=>{
         return(
           <View style={styles.screen}>
               <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{setRefreshing(true)}}/>}>
-              <OrdersCard box1="Pending" box2="Confirmed" box3="Delivered" header="ORDERS" pendingCounts={totalOrdersCounts.pendingCounts} confirmedCounts={totalOrdersCounts.confirmedCounts} deliveredCounts={totalOrdersCounts.deliveredCounts}/>
+              <OrdersCard box1="Pending" box2="Confirmed" box3="Delivered" header="ORDERS" pendingCounts={totalOrdersCounts.pendingCounts!==null?totalOrdersCounts.pendingCounts:0} confirmedCounts={totalOrdersCounts.confirmedCounts!==null?totalOrdersCounts.confirmedCounts:0} deliveredCounts={totalOrdersCounts.deliveredCounts!==null?totalOrdersCounts.deliveredCounts:0}/>
               <View style={styles.cardContainer}>
               <CustomCard title="Your Dishes"/>
               <CustomCard title="Kitchen Hours"/>

@@ -271,7 +271,7 @@ const OrdersScreen=(props)=>{
 
         return(
           <View style={styles.screen}>
-              <OrdersCard box1="Pending" box2="Confirmed" box3="Delivered"  header="ORDERS" pendingCounts={ordersCounts.pendingCounts} confirmedCounts={ordersCounts.confirmedCounts} deliveredCounts={ordersCounts.deliveredCounts}/>
+              <OrdersCard box1="Pending" box2="Confirmed" box3="Delivered"  header="ORDERS" pendingCounts={ordersCounts.pendingCounts!==null?ordersCounts.pendingCounts:0} confirmedCounts={ordersCounts.confirmedCounts!==null?ordersCounts.confirmedCounts:0} deliveredCounts={ordersCounts.deliveredCounts!==null?ordersCounts.deliveredCounts:0}/>
               {/* 
               <OrdersCard box1="Completed" box2="Cancelled" box3="Total" header="ORDERS HISTORY"/>
               
