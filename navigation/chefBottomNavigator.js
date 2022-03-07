@@ -21,6 +21,10 @@ import AddDisheScreen from '../screens/addDishScreen';
 import DishDetailScreen from '../screens/dishDetailScreen';
 import NotificationScreen from '../screens/notificationScreen';
 import LoginScreen from '../screens/loginScreen';
+import IntroScreen from '../screens/introScreen';
+import ChefInfoScreen from '../screens/chefInfo';
+import AddressInfoScreen from '../screens/addressInfo';
+import KitchenInfoScreen from '../screens/kitchenInfoScreen';
 import OTPScreen from '../screens/otpTakingScreen';
 
 const defaultNavConfiguration= {
@@ -116,7 +120,11 @@ const navigationConfiguration={
 const AuthNavigator=createStackNavigator(
     {  
         Login:LoginScreen,
-        OTP:OTPScreen
+        OTP:OTPScreen,
+        Intro:IntroScreen,
+        ChefInfo:ChefInfoScreen,
+        AddressInfo:AddressInfoScreen,
+        KitchenInfo:KitchenInfoScreen,
     },defaultNavConfiguration
 )
 

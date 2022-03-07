@@ -124,7 +124,7 @@ const LoginScreen=(props)=>{
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>{
-                props.navigation.navigate('Signup')
+                props.navigation.navigate('Intro')
             }}>
                 <View style={{paddingVertical:10}}>
                     <Text style={{...styles.btnTitle,textDecorationLine:'underline'}}>create new account</Text>
@@ -200,7 +200,7 @@ const styles=StyleSheet.create({
   
         width:'100%',
         alignItems:'center',
-        padding:10,
+        paddingVertical:10,
         
         
     },
@@ -225,7 +225,7 @@ const styles=StyleSheet.create({
     btnTitle:{
         color:Colors.whiteColor,
         fontSize:16,
-        paddingEnd:10
+        //paddingEnd:10
     },
 
 })

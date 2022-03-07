@@ -2,33 +2,22 @@ import React,{useState,useEffect} from "react";
 import {View,Text,StyleSheet, KeyboardAvoidingView,TextInput,TouchableOpacity,ToastAndroid} from 'react-native';
 import Colors from "../constants/Colors";
 import IP from "../constants/IP";
-import { useDispatch } from "react-redux";
 import { SvgUri } from 'react-native-svg';
 import {LinearGradient} from 'expo-linear-gradient'
-import { getChefDetail } from "../store/actions/orderActions";
 
 const OTPScreen=(props)=>{
 
     const [isOTPFocused,setOTPFocused]=useState(false);
     const [otp,setOtp]=useState('');
-    //const [authData,setAuthData]=useState({});
-    //const [verResponse,setVerResponse]=useState({});
+   
     let verResponse={};
     let dataOfChef;
     const authenticationData=props.navigation.getParam('otpData');
-    const chefData=props.navigation.getParam('chef');
+    const chefData=props.navigation.getParam('chefDetail');
    
-    const dispatch=useDispatch();
     
     const handleOTPFocus=()=>setOTPFocused(true);
     const handleOTPBlur=()=>setOTPFocused(false);
-
-    const getData=async ()=>{
-        const response=await fetch(`http://${IP.ip}:3000/chef/getChefData/${chefData.chef_id}`)
-        const chData=await response.json()
-        dataOfChef=chData
-        //setCustomerData(custData)
-     }
 
     const OTPHandler=()=>{
         
@@ -51,26 +40,28 @@ const OTPScreen=(props)=>{
             .then(()=>ToastAndroid.show(verResponse.msg, ToastAndroid.SHORT))
             .then(()=>{
                 if(verResponse.verification===true){
-                    getData().then(()=>{
-                    if(dataOfChef.length===0){
                         console.log("entered .....")
-                        let url=`http://${IP.ip}:3000/customer/register`;
-                        let data= customerData
-                        fetch(url,{
-                            method:'POST',
-                            headers: {
-                                Accept: 'application/json',
-                                'Content-Type': 'application/json'
-                            },
-                            body:JSON.stringify(data)
-                        }).then((response)=>response.json())
-                        .then((response)=>console.log(response))
-                        .then(()=>console.log("Working...."))
-                    }
+                    //     let url=`http://${IP.ip}:3000/customer/register`;
+                    //     let data= customerData
+                    //     fetch(url,{
+                    //         method:'POST',
+                    //         headers: {
+                    //             Accept: 'application/json',
+                    //             'Content-Type': 'application/json'
+                    //         },
+                    //         body:JSON.stringify(data)
+                    //     }).then((response)=>response.json())
+                    //     .then((response)=>console.log(response))
+                    //     .then(()=>console.log("Working...."))
+                    // dispatch(getChefDetail(chefData))
+                    // console.log(chefData)
+                    // props.navigation.navigate('MainHome')
+                    props.navigation.navigate({
+                        routeName:'KitchenInfo',
+                        params:{
+                            chefDetail:chefData 
+                      }
                     })
-                    dispatch(getChefDetail(chefData))
-                    console.log(chefData)
-                    props.navigation.navigate('MainHome')
                 }
                 else if(verResponse.verification===false){
                     props.navigation.goBack();
@@ -112,7 +103,7 @@ const OTPScreen=(props)=>{
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>{
-                props.navigation.goBack();
+                props.navigation.navigate('Login');
             }}>
                 <View style={{paddingVertical:10}}>
                     <Text style={{...styles.btnTitle,textDecorationLine:'underline'}}>Back to Login</Text>
