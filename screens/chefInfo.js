@@ -9,20 +9,26 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   ImageBackground,
+
   
   Button,
   Platform,
 } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import * as ImagePicker from "expo-image-picker"
+import IP from '../constants/IP';
 const ChefInfoScreen = (props) => {
 
     
   
   //imagepicker
-  const [image, setImage] = useState(
-    "https://www.angleseylocal.com/wp-content/uploads/2018/12/no_logo.png"
+  const [imageLogo, setImageLogo] = useState(
+  `http://${IP.ip}:3000/images/no_logo.png`
   )
+  let image=`http://${IP.ip}:3000/images/no_logo.png`;
+  let imagePath="no_logo.png";
+  const [imageLogoPath,setImageLogoPath]=useState("no_logo.png");
+  //const [imagePath,setImagePath]=useState("no_logo.png");
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -35,10 +41,47 @@ const ChefInfoScreen = (props) => {
     console.log(result)
 
     if (!result.cancelled) {
-      setImage(result.uri)
+      //setImage(result.uri)
+      image=result.uri;
+      setImageLogo(result.uri)
+      console.log(image)
       console.log(result.uri);
-    }
+      uploadDishImage();
+        }
   }
+
+/*********   Save Image Path   ****** */
+const uploadDishImage=async ()=>{
+  const url=`http://${IP.ip}:3000/uploadImage`
+  const formData=new FormData();
+  formData.append('upload',{
+    name:"kitchenName",
+    uri:image,
+    type:'image/jpg'
+  })
+
+ await fetch(url,{
+    method:'POST',
+    headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data'
+      },
+    body:formData
+})
+.then((response)=>response.json())
+.then((response)=>{
+    //setImagePath(response.path);
+    imagePath=response.path;
+    setImageLogoPath(response.path);
+    console.log(imagePath);
+    console.log(response);
+    })
+
+.catch((error)=>console.log(error));
+}
+
+
+
 
   //Kitchen name handlers
   const [enteredKitchenname, setEnteredKitchenname] = useState("")
@@ -89,6 +132,7 @@ const ChefInfoScreen = (props) => {
 
   const NextBtnHandler = () => {
       const personalInfo={
+        logo:imagePath,
         kitchen_name:enteredKitchenname,
         firstname:enteredChefFirstname,
         lastname:enteredChefLastname,
@@ -111,7 +155,7 @@ const ChefInfoScreen = (props) => {
         <View style={styles.profilecontainer}>
           <View style={styles.profileview}>
            
-            <ImageBackground source={{ uri: image }} style={styles.image}>
+            <ImageBackground source={{ uri: imageLogo }} style={styles.image}>
               {/* // {{ width: 200, height: 200 }} */}
               <View style={styles.camera}>
                 <TouchableOpacity onPress={pickImage}>

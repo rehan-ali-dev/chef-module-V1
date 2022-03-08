@@ -108,7 +108,7 @@ const AddressInfoScreen = (props) => {
           onValueChange={(itemValue, itemIndex) => setSelectedCity(itemValue)}>
           <Picker.Item label="Select City" value="diabled" color="#aaa" />
           <Picker.Item label="Mianwali" value="Mianwali" />
-          <Picker.Item label="Chakwal" value="Chakwal" value="diabled" color="#aaa"/>
+          <Picker.Item label="Chakwal" value="Chakwal" color="#aaa"/>
         </Picker>
         </View>
 

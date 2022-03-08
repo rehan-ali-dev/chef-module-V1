@@ -26,6 +26,7 @@ import ChefInfoScreen from '../screens/chefInfo';
 import AddressInfoScreen from '../screens/addressInfo';
 import KitchenInfoScreen from '../screens/kitchenInfoScreen';
 import OTPScreen from '../screens/otpTakingScreen';
+import PasswordScreen from '../screens/passwordScreen';
 
 const defaultNavConfiguration= {
     //set Default Configuration
@@ -121,6 +122,7 @@ const AuthNavigator=createStackNavigator(
     {  
         Login:LoginScreen,
         OTP:OTPScreen,
+        Password:PasswordScreen,
         Intro:IntroScreen,
         ChefInfo:ChefInfoScreen,
         AddressInfo:AddressInfoScreen,

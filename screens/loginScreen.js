@@ -116,6 +116,19 @@ const LoginScreen=(props)=>{
                 placeholder="password" onFocus={handlePassFocus} onBlur={handlePassBlur}
              value={password} onChangeText={(text)=>setPassword(text)}
              />
+            <TouchableOpacity onPress={()=>{
+                props.navigation.navigate({
+                    routeName:'Password',
+                    params:{ 
+                      phone:phone
+                  }
+                })
+            }}>
+                <View style={{paddingHorizontal:20,paddingTop:5,alignItems:'flex-end'}}>
+                    <Text style={{...styles.btnTitle,textDecorationLine:'underline'}}>change password</Text>
+                </View>
+            </TouchableOpacity>
+            
             
               <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={LoginHandler}>
