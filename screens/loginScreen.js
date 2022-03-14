@@ -117,6 +117,7 @@ const LoginScreen=(props)=>{
              value={password} onChangeText={(text)=>setPassword(text)}
              />
             <TouchableOpacity onPress={()=>{
+                console.log(phone);
                 props.navigation.navigate({
                     routeName:'Password',
                     params:{ 

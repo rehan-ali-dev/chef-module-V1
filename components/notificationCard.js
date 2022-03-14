@@ -31,7 +31,7 @@ const  NotificationCard=props=>{
                 
                 <View style={styles.notificationContainer}>
                 <Text style={{...styles.subTitle}}>Total Amount</Text>
-                <Text style={{...styles.subTitle}}>{props.totalAmount}</Text>
+                <Text style={{...styles.subTitle}}>Rs. {props.totalAmount}</Text>
                 </View>
                 </View>
                 }

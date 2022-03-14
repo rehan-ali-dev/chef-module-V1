@@ -15,6 +15,7 @@ const PasswordScreen=(props)=>{
     const [password,setPassword]=useState('');
     const [confirmPassword,setConfirmPassword]=useState('');
     const chefPhone=props.navigation.getParam('phone');
+    
     let chefData;
 
     const dispatch=useDispatch();
@@ -33,10 +34,9 @@ const PasswordScreen=(props)=>{
 
     const checkUser=()=>{
         getData().then(()=>{
-        if(chefData.length==0){
-
-            return false
-            
+        console.log(chefData.length)
+        if(chefData.length===0){
+            return false    
         }
         else{
             return true
@@ -52,7 +52,7 @@ const PasswordScreen=(props)=>{
             console.log("Unmatched Password")
             ToastAndroid.show(`Password Unmatched! Try Again`, ToastAndroid.SHORT)
         }
-        else if(!checkUser()){
+        else if(checkUser()===false){
             ToastAndroid.show(`Kindly Enter the Right Phone Number`, ToastAndroid.SHORT)
             props.navigation.goBack();
             return;

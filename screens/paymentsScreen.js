@@ -13,11 +13,14 @@ import {
   Dimensions,
   Picker,
   Switch,
+  RefreshControl
 } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { LinearGradient } from "expo-linear-gradient"
 import { useSelector,useDispatch } from "react-redux"
 // import { Switch } from "react-native-gesture-handler"
+import IP from "../constants/IP"
+
 
 const PaymentsScreen = (props) => {
 
@@ -30,9 +33,44 @@ const PaymentsScreen = (props) => {
 
     const chefDetail=useSelector(state=>state.order.chefDetails);
 
-    useEffect(()=>{
+    const getTotalEarning=async ()=>{
+      await fetch(`http://${IP.ip}:3000/payments/totalEarning/${chefDetail.chef_id}`)
+        .then((response)=>response.json())
+        .then((response)=>setTotalEarned(response[0].totalEarning))
+    }
 
-    },[])
+    const getTotalWithdrawn=async ()=>{
+      await fetch(`http://${IP.ip}:3000/payments/totalWithdrawn/${chefDetail.chef_id}`)
+        .then((response)=>response.json())
+        .then((response)=>setTotalWithdrawn(response[0].totalWithdrawn))
+    }
+
+    const getWeeklyPayment=async ()=>{
+      await fetch(`http://${IP.ip}:3000/payments/recentEarning/${chefDetail.chef_id}`)
+        .then((response)=>response.json())
+        .then((response)=>setWeeklyPayments(response[0].recentEarning))
+    }
+
+    const getRecentRecieved=async ()=>{
+      await fetch(`http://${IP.ip}:3000/payments/recentPaid/${chefDetail.chef_id}`)
+        .then((response)=>response.json())
+        .then((response)=>setRecentRecievedPayments(response[0].recentWithdrawn))
+    }
+
+
+    useEffect(()=>{
+      
+      getTotalEarning().then(()=>{
+        getTotalWithdrawn().then(()=>{
+          getWeeklyPayment().then(()=>{
+            getRecentRecieved().then(()=>{
+              setLoading(false)
+            })
+          })
+        })
+      })
+
+    },[isLoading])
 
 
 
@@ -42,7 +80,7 @@ const PaymentsScreen = (props) => {
 
 
   return (
-    <ScrollView>
+    <ScrollView refreshControl={<RefreshControl refreshing={isLoading} onRefresh={()=>{setLoading(true)}}/>}>
     <View style={styles.screencontainer}>
        
       <LinearGradient
@@ -70,7 +108,7 @@ const PaymentsScreen = (props) => {
             <Text style={styles.payments}>Recent Weekly Payments</Text>
             {/* {"//inputbox "} */}
             <View style={styles.inputContainer}>
-              <Text style={styles.money}>2000</Text>
+              <Text style={styles.money}>{weeklyPayments}</Text>
             </View>
           </View>
 
@@ -79,7 +117,7 @@ const PaymentsScreen = (props) => {
             <Text style={styles.payments}>Recent Recieved Payment</Text>
             {/* {"//inputbox "} */}
             <View style={styles.inputContainer}>
-              <Text style={styles.money}>5000</Text>
+              <Text style={styles.money}>{recentRecievedPayments}</Text>
             </View>
           </View>
 
@@ -88,7 +126,7 @@ const PaymentsScreen = (props) => {
             <Text style={styles.payments}>Total Earned Money</Text>
             {/* {"//inputbox "} */}
             <View style={styles.inputContainer}>
-              <Text style={styles.money}>20000</Text>
+              <Text style={styles.money}>{totalEarned}</Text>
             </View>
           </View>
 
@@ -97,7 +135,7 @@ const PaymentsScreen = (props) => {
             <Text style={styles.payments}>Total Withdarwn Money</Text>
             {/* {"//inputbox "} */}
             <View style={styles.inputContainer}>
-              <Text style={styles.money}>5000</Text>
+              <Text style={styles.money}>{totalWithdrawn}</Text>
             </View>
           </View>
         </View>

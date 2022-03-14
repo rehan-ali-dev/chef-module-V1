@@ -30,7 +30,7 @@ const ProfileScreen = (props) => {
      const [address,setAddress]=useState("");
      const [city,setCity]=useState("");
     const [image, setImage] = useState(
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt_NZykul07nU3cliFuRZQr4_q-gOdkRTmRA&usqp=CAU"
+        `http://${IP.ip}:3000/images/no_logo.png`
       );
      const [kitchenDetail,setKitchenDetail]=useState({});
 
@@ -63,7 +63,10 @@ const ProfileScreen = (props) => {
         <View style={styles.profilecontainer}>
           <View style={styles.profileview}>
 
-            <ImageBackground source={{ uri: image?image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt_NZykul07nU3cliFuRZQr4_q-gOdkRTmRA&usqp=CAU" }} style={styles.image}>
+            {/* <ImageBackground source={{ uri: image?image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt_NZykul07nU3cliFuRZQr4_q-gOdkRTmRA&usqp=CAU" }} style={styles.image}>
+            </ImageBackground> */}
+
+            <ImageBackground source={{ uri: `http://${IP.ip}:3000/images/${image}` }} style={styles.image}>
             </ImageBackground>
           </View>
 
