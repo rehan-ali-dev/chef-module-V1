@@ -6,7 +6,7 @@ import OrdersCard from '../components/ordersCard';
 import CustomCard from "../components/customCard";
 import { HeaderButtons,Item } from "react-navigation-header-buttons";
 import { useDispatch,useSelector } from "react-redux";
-import { getOrderCounts,getOrderData, getOrderDetails } from "../store/actions/orderActions";
+import { getOrderCounts,getOrderData, getOrderDetails,getDishes } from "../store/actions/orderActions";
 import CustomHeaderButton from "../components/customHeaderButton";
 import IP from "../constants/IP";
 
@@ -20,6 +20,7 @@ const HomeScreen=(props)=>{
     const [chefOrders,setChefOrders]=useState([]);
     const [chefOrderDetails,setChefOrderDetails]=useState([]);
     const [refreshing,setRefreshing]=useState(true);
+    const [dishesLoading,setDishesLoading]=useState(true);
 
     const totalOrdersCounts=useSelector(state=>state.order.OrdersCounts);
     const chefDetail=useSelector(state=>state.order.chefDetails);
@@ -58,15 +59,32 @@ const HomeScreen=(props)=>{
         .catch((error)=>console.error(error))
        
       },[refreshing]);
+
+
+      useEffect(()=>{
+
+        //const kitchen='Bisma Ka Kitchen';
+        const chefId=chefDetail.chef_id;
+        fetch(`http://${IP.ip}:3000/dish/chef/${chefId}`)
+        .then((response)=>response.json())
+        .then((response)=>dispatch(getDishes(response)))
+        //.then(()=>dispatch(getDishes(mealsData)))
+        .catch((error)=>console.error(error))
+        .finally(()=>setDishesLoading(false));
+      },[dishesLoading]);
     
         return(
           <View style={styles.screen}>
               <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{setRefreshing(true)}}/>}>
               <OrdersCard box1="Pending" box2="Confirmed" box3="Delivered" header="ORDERS" pendingCounts={totalOrdersCounts.pendingCounts!==null?totalOrdersCounts.pendingCounts:0} confirmedCounts={totalOrdersCounts.confirmedCounts!==null?totalOrdersCounts.confirmedCounts:0} deliveredCounts={totalOrdersCounts.deliveredCounts!==null?totalOrdersCounts.deliveredCounts:0}/>
               <View style={styles.cardContainer}>
-              <CustomCard title="Your Dishes"/>
-              <CustomCard title="Kitchen Hours"/>
-              <CustomCard title="Weekly Plans"/>
+              <CustomCard title="Your Dishes" onSelect={()=>{
+                  props.navigation.navigate('Dishes');
+              }}/>
+              {/* <CustomCard title="Kitchen Hours"/> */}
+              <CustomCard title="Weekly Plans" onSelect={()=>{
+                  props.navigation.navigate('WeeklyPlansList');
+              }}/>
              
               </View>
               </ScrollView>

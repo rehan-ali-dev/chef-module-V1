@@ -10,7 +10,7 @@ import {
   ScrollView,
   ImageBackground,
 
-  
+  ToastAndroid,
   Button,
   Platform,
 } from "react-native"
@@ -28,6 +28,7 @@ const ChefInfoScreen = (props) => {
   let image=`http://${IP.ip}:3000/images/no_logo.png`;
   let imagePath="no_logo.png";
   const [imageLogoPath,setImageLogoPath]=useState("no_logo.png");
+  let isNumberAlreadyExist;
   //const [imagePath,setImagePath]=useState("no_logo.png");
 
   const pickImage = async () => {
@@ -129,8 +130,29 @@ const uploadDishImage=async ()=>{
     setEnteredEmail(enteredText)
   }
   
+const isChefExist=async ()=>{
+      const response=await fetch(`http://${IP.ip}:3000/chef/getChefData/${enteredContact}`)
+       const chData=await response.json()
+       if(chData>=0){
+         return true;
+       }
+       else{
+         return false;
+       }
+
+}
+
+
+
 
   const NextBtnHandler = () => {
+    if(isChefExist()){
+      ToastAndroid.show(`You already have account log in kindly`, ToastAndroid.SHORT)
+      props.navigation.navigate({
+        routeName:'Login',
+    })
+    return;
+    }
       const personalInfo={
         logo:imagePath,
         kitchen_name:enteredKitchenname,

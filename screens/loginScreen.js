@@ -87,12 +87,16 @@ const LoginScreen=(props)=>{
         <LinearGradient colors={["#FF620A","#FF620A"]} style={styles.screen}>
         <KeyboardAvoidingView behavior="padding"  keyboardVerticalOffset={30} style={styles.screen}>
             <LinearGradient colors={["#FFAB00","#FF620A"]} style={styles.gradient}>
+            <View style={styles.appNameContainer}>
             <View style={styles.svgContainer}>
             <SvgUri
             width="100%"
             height="100%"
             uri={`http://${IP.ip}:3000/images/appLogo.svg`}
             />
+            </View>
+            <View style={{width:'100%',alignItems:'center'}}><Text style={{color:Colors.whiteColor,fontSize:20}}>CHEF APP</Text></View>
+
             </View>
             <View style={styles.card}>
                
@@ -191,6 +195,12 @@ const styles=StyleSheet.create({
     svgContainer:{
         width:350,
         height:350,
+    },
+    appNameContainer:{
+        width:'100%',
+        height:400,
+        alignItems:'center'
+
     },
     inputTitles:{
         padding:5,

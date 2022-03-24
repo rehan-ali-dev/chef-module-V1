@@ -30,8 +30,28 @@ const PaymentsScreen = (props) => {
     const [totalEarned,setTotalEarned]=useState(0);
     const [totalWithdrawn,setTotalWithdrawn]=useState(0);
     const [isLoading,setLoading]=useState(true);
+    const [kitchenPayments,setKitchenPayments]=useState([]);
+    let withdrawnMoney;
 
     const chefDetail=useSelector(state=>state.order.chefDetails);
+
+
+    
+
+    useEffect(()=>{
+        fetch(`http://${IP.ip}:3000/payments/kitchensPayments/chef/${chefDetail.chef_id}`)
+        .then((response)=>response.json())
+        .then((response)=>setKitchenPayments(response[0]))
+        .then(()=>console.log(kitchenPayments))
+        .then(()=>{
+          withdrawnMoney=kitchenPayments.total_earning-kitchenPayments.pending
+        })
+        .catch((error)=>console.error(error))   
+    },[]);
+
+
+
+
 
     const getTotalEarning=async ()=>{
       await fetch(`http://${IP.ip}:3000/payments/totalEarning/${chefDetail.chef_id}`)
@@ -105,37 +125,39 @@ const PaymentsScreen = (props) => {
         <View style={styles.maincard}>
           {/* Weekly Payments Card */}
           <View style={styles.infofield}>
-            <Text style={styles.payments}>Recent Weekly Payments</Text>
+            <Text style={styles.payments}>Pending Weekly Payment</Text>
             {/* {"//inputbox "} */}
             <View style={styles.inputContainer}>
-              <Text style={styles.money}>{weeklyPayments}</Text>
+              {/* <Text style={styles.money}>{weeklyPayments}</Text> */}
+              <Text style={styles.money}>{kitchenPayments.pending}</Text>
             </View>
           </View>
 
           {/* Recent recieved Payments Card */}
-          <View style={styles.infofield}>
+          {/* <View style={styles.infofield}>
             <Text style={styles.payments}>Recent Recieved Payment</Text>
-            {/* {"//inputbox "} */}
             <View style={styles.inputContainer}>
-              <Text style={styles.money}>{recentRecievedPayments}</Text>
+              <Text style={styles.money}>{kitchenPayments.pending}</Text>
             </View>
-          </View>
+          </View> */}
 
           {/* Total Earned money Card */}
           <View style={styles.infofield}>
             <Text style={styles.payments}>Total Earned Money</Text>
             {/* {"//inputbox "} */}
             <View style={styles.inputContainer}>
-              <Text style={styles.money}>{totalEarned}</Text>
+              {/* <Text style={styles.money}>{totalEarned}</Text> */}
+              <Text style={styles.money}>{kitchenPayments.total_earning}</Text>
             </View>
           </View>
 
           {/* Total withdrawn money Card */}
           <View style={styles.infofield}>
-            <Text style={styles.payments}>Total Withdarwn Money</Text>
+            <Text style={styles.payments}>Total Withdrawn Money</Text>
             {/* {"//inputbox "} */}
             <View style={styles.inputContainer}>
-              <Text style={styles.money}>{totalWithdrawn}</Text>
+              {/* <Text style={styles.money}>{totalWithdrawn}</Text> */}
+              <Text style={styles.money}>{kitchenPayments.total_earning-kitchenPayments.pending}</Text>
             </View>
           </View>
         </View>

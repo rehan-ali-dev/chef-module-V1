@@ -42,6 +42,7 @@ const  NotificationCard=props=>{
                 {props.forOrderScreen &&
                 <View style={styles.notificationContainer}>
                 <Text style={{...styles.subTitle}}>Order Placed At</Text>
+                {/* <Text style={{...styles.subTitle}}>{props.timeOfOrder.substring(11, 16)}  {props.timeOfOrder.substring(0, 10)}</Text> */}
                 <Text style={{...styles.subTitle}}>{props.timeOfOrder}</Text>
                 </View>
                 }

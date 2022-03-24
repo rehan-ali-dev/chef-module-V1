@@ -8,7 +8,7 @@ import OrderBox from "./orderBox";
 const  CustomCard=props=>{
    
     return(
-        <TouchableOpacity style={styles.customCard}>
+        <TouchableOpacity style={styles.customCard} onPress={props.onSelect}>
         <View>
             <View style={styles.dataContainer}>
                 <Text style={{color:Colors.whiteColor,fontWeight:'bold',fontSize:16}}>{props.title}</Text>

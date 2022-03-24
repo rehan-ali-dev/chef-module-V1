@@ -30,7 +30,7 @@ const ProfileScreen = (props) => {
      const [address,setAddress]=useState("");
      const [city,setCity]=useState("");
     const [image, setImage] = useState(
-        `http://${IP.ip}:3000/images/no_logo.png`
+        `no_logo.png`
       );
      const [kitchenDetail,setKitchenDetail]=useState({});
 
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     marginTop: 20,
     borderRadius: 125,
-    marginTop: 80,
+    marginTop: 50,
 
     overflow: "hidden",
   },

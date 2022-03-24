@@ -121,7 +121,7 @@ const AddDisheScreen=(props)=>{
         setImagePath(response.path);
         console.log(response);
         })
-    
+    .then(()=>ToastAndroid.show(`Image Saved`, ToastAndroid.SHORT))
     .catch((error)=>console.log(error));
     }
   
@@ -155,7 +155,7 @@ const AddDisheScreen=(props)=>{
           body:JSON.stringify(data)
       }).then((response)=>response.json())
       .then((response)=>{
-        insertedId=response.insertId;
+        let insertedId=response.insertId;
         const NewDish={
                 dish_id:insertedId,
                 dish_name:dishName,
@@ -251,7 +251,8 @@ const AddDisheScreen=(props)=>{
                  ? Colors.primaryColor
                  : '#F5FCFF',
              borderWidth: isPriceFocused?1:0}} placeholder="Rs. Price" onFocus={handlePriceFocus} onBlur={handlePriceBlur}
-             value={dishPrice} onChangeText={(text)=>setDishPrice(text)}
+             keyboardType="numeric"
+             value={dishPrice.toString()} onChangeText={(text)=>setDishPrice(text)}
              />
 
             <View style={styles.inputTitles}><Text style={styles.inputHeader}>Description</Text></View>  
@@ -338,6 +339,7 @@ const styles=StyleSheet.create(
             
             alignItems:'center',
             //borderWidth:0.5,
+            justifyContent:'center',
             backgroundColor: '#F5FCFF',
             marginHorizontal:20,
             padding:5,

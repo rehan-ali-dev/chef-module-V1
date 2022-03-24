@@ -25,6 +25,10 @@ import IntroScreen from '../screens/introScreen';
 import ChefInfoScreen from '../screens/chefInfo';
 import AddressInfoScreen from '../screens/addressInfo';
 import KitchenInfoScreen from '../screens/kitchenInfoScreen';
+import WeeklyPlansListScreen from '../screens/weeklyPlansListScreen';
+import WeeklyPlanDetailsScreen from '../screens/weeklyPlanDetailsScreen';
+import AddPlanScreen from '../screens/AddPlanScreen';
+import AddPlanScreen2 from '../screens/AddPlanScreen2';
 import OTPScreen from '../screens/otpTakingScreen';
 import PasswordScreen from '../screens/passwordScreen';
 
@@ -42,7 +46,11 @@ const defaultNavConfiguration= {
 const HomeNavigator=createStackNavigator(
     {
         Home: HomeScreen,
-        Notifications:NotificationScreen
+        Notifications:NotificationScreen,
+        WeeklyPlansList:WeeklyPlansListScreen,
+        WeeklyPlanDetails:WeeklyPlanDetailsScreen,
+        AddPlan:AddPlanScreen,
+        AddPlan2:AddPlanScreen2,
     },defaultNavConfiguration
 );
 

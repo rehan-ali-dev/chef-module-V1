@@ -9,11 +9,12 @@ import {
   Textarea,
   KeyboardAvoidingView,
   ScrollView,
-  Picker,
+  
   Switch,
   ToastAndroid
 } from "react-native";
 import IP from "../constants/IP";
+import { Picker } from "@react-native-picker/picker";
 
 const DishDetailScreen = (props) => {
   //picker
@@ -23,11 +24,11 @@ const DishDetailScreen = (props) => {
   const [imageUrl,setImageUrl]=useState(props.navigation.getParam('imageUrl'));
   const [kitchenName,setKitchenName]=useState(props.navigation.getParam('kitchenName'));
   const [availability,setAvailability]=useState(props.navigation.getParam('available'));
-  const [price,setPrice]=useState(props.navigation.getParam('price'));
+  const [price,setPrice]=useState(props.navigation.getParam('price').toString());
   const [category,setCategory]=useState(props.navigation.getParam('category'));
   const [cuisine,setCuisine]=useState(props.navigation.getParam('cuisine'));
   const [description,setDescription]=useState(props.navigation.getParam('description'));
-  const [servingSize,setServingSize]=useState(props.navigation.getParam('servingSize'));
+  const [servingSize,setServingSize]=useState(props.navigation.getParam('servingSize').toString());
   const [pushToken,setPushToken]=useState(props.navigation.getParam('pushToken'));
 
 
@@ -204,7 +205,7 @@ const DishDetailScreen = (props) => {
             placeholder="Serving Size Per Person"
             onChangeText={ServingSizeInputHandler}
             value={servingSize}
-            defaultValue={servingSize.toString()}
+            defaultValue={servingSize}
           />
         </View>
 
