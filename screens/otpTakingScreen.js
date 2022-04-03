@@ -87,7 +87,9 @@ const OTPScreen=(props)=>{
             <View style={styles.card}>
                
                 <View style={{width:'100%',alignItems:'center'}}><Text style={{color:Colors.whiteColor,fontSize:18}}>VERIFY</Text></View>
-                <View style={styles.inputTitles}><Text style={styles.inputHeader}>OTP</Text></View>    
+                <View style={styles.inputTitles}><Text style={styles.inputHeader}>OTP</Text></View>  
+                <View style={styles.inputTitles}><Text style={{...styles.inputHeader,fontSize:14}}>We have sent 6 digit code to you kindly enter here:</Text></View>    
+  
                 <TextInput style={{...styles.inputText,borderColor:isOTPFocused
                  ? Colors.primaryColor
                  : '#F5FCFF',
@@ -145,8 +147,8 @@ const styles=StyleSheet.create({
     },
     card:{
         width:'80%',
-        height:200,
-        maxHeight:200,
+        height:250,
+        maxHeight:250,
         //backgroundColor:Colors.whiteColor,
         backgroundColor:'rgba(255,255,255,0.3)',
         padding:10,

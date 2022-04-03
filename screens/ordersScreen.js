@@ -142,7 +142,7 @@ const OrdersScreen=(props)=>{
                         },
                         title:'Chef Confirm Your Order',
                         body:"Kindly wait till delivery",  
-                        experienceId: "@rehan.ali/customer-module-V1",
+                        //experienceId: "@rehan.ali/customer-module-V1",
                     })
                 }).then(()=>console.log("Confirmation notification sent to Customer"))
                 .then(()=>{
@@ -208,7 +208,7 @@ const OrdersScreen=(props)=>{
                         },
                         title:"Sorry, We Cant't Serve You at this moment",
                         body:"Chef Cancelled Your Order",  
-                        experienceId: "@rehan.ali/customer-module-V1",
+                        //experienceId: "@rehan.ali/customer-module-V1",
                     })
                 }).then(()=>console.log("Confirmation notification sent to Customer"))
                 .then(()=>{

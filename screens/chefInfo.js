@@ -133,7 +133,7 @@ const uploadDishImage=async ()=>{
 const isChefExist=async ()=>{
       const response=await fetch(`http://${IP.ip}:3000/chef/getChefData/${enteredContact}`)
        const chData=await response.json()
-       if(chData>=0){
+       if(chData.length>0){
          return true;
        }
        else{
@@ -146,7 +146,7 @@ const isChefExist=async ()=>{
 
 
   const NextBtnHandler = () => {
-    if(isChefExist()){
+    if(isChefExist()===true){
       ToastAndroid.show(`You already have account log in kindly`, ToastAndroid.SHORT)
       props.navigation.navigate({
         routeName:'Login',
