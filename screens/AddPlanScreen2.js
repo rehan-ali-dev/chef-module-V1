@@ -26,7 +26,8 @@ const AddPlanScreen2=(props)=>{
     const fridayDish=props.navigation.getParam('fridayDish');
     const saturdayDish=props.navigation.getParam('saturdayDish');
     const [planName,setPlanName]=useState('');
-    const [planLogo,setPlanLogo]=useState(`http://${IP}:3000/images/no_logo.png`);
+    const [planLogo,setPlanLogo]=useState(`no_logo.png`);
+    const [isLoading,setLoading]=useState(true);
 
     const dishesIds=[mondayDish,tuesdayDish,wednesdayDish,thursdayDish,fridayDish,saturdayDish];
    
@@ -37,11 +38,20 @@ const AddPlanScreen2=(props)=>{
     let responseAfterInsertion;
     let weeklyPlanId;
 
-    useEffect(()=>{
-        console.log("/// Plan Dishes ///////")
-        console.log(planDishes)
-    })
+    // useEffect(()=>{
+    //     console.log("/// Plan Dishes ///////")
+    //     console.log(planDishes)
+    // })
 
+    useEffect(()=>{
+        fetch(`http://${IP.ip}:3000/kitchen/getLogo/${kitchen_name}`)
+        .then((response)=>response.json())
+        .then((response)=>setPlanLogo(response[0].logo))
+        .then(()=>console.log("///   Logo   ///"))
+        .then(()=>console.log(planLogo))
+        .catch((error)=>console.error(error))
+        .finally(()=>setLoading(false));
+    },[isLoading])
    
     const dispatch=useDispatch();
 
@@ -50,7 +60,7 @@ const AddPlanScreen2=(props)=>{
         let data={
             planName:planName,
             kitchenName:kitchen_name,
-            planlogo:planLogo,
+            planLogo:planLogo,
             planPrice:totalPlanPrice
         }
         await fetch(url,{
