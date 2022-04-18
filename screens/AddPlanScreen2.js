@@ -28,6 +28,7 @@ const AddPlanScreen2=(props)=>{
     const [planName,setPlanName]=useState('');
     const [planLogo,setPlanLogo]=useState(`no_logo.png`);
     const [isLoading,setLoading]=useState(true);
+    const [token,setToken]=useState('');
 
     const dishesIds=[mondayDish,tuesdayDish,wednesdayDish,thursdayDish,fridayDish,saturdayDish];
    
@@ -42,6 +43,21 @@ const AddPlanScreen2=(props)=>{
     //     console.log("/// Plan Dishes ///////")
     //     console.log(planDishes)
     // })
+
+    useEffect(()=>{
+        Notifications.getExpoPushTokenAsync()
+        .then(response=>{
+          console.log(response);
+          setToken(response.data);
+          console.log(token);
+        })
+        .catch((err)=>{
+          return null;
+        })
+      },[]);
+  
+
+
 
     useEffect(()=>{
         fetch(`http://${IP.ip}:3000/kitchen/getLogo/${kitchen_name}`)
@@ -61,7 +77,8 @@ const AddPlanScreen2=(props)=>{
             planName:planName,
             kitchenName:kitchen_name,
             planLogo:planLogo,
-            planPrice:totalPlanPrice
+            planPrice:totalPlanPrice,
+            pushToken:token,
         }
         await fetch(url,{
             method:'POST',

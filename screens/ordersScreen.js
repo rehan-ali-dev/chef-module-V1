@@ -286,6 +286,7 @@ const OrdersScreen=(props)=>{
             <View style={styles.kitchenContainer}>
             <FlatList 
             //data={ordersData}
+
             data={chefOrders} renderItem={renderNotificationCard} keyExtractor={(item)=>item.order_id}
             showsVerticalScrollIndicator={false}
             />

@@ -13,6 +13,8 @@ import {
 } from "react-native"
 import WeeklyPlanCard from "../components/weeklyPlanCard"
 import { PLANSDATA } from "../constants/plansData";
+import { HeaderButtons,Item } from "react-navigation-header-buttons";
+import CustomHeaderButton from "../components/customHeaderButton";
 import Colors from "../constants/Colors";
 import { Ionicons } from '@expo/vector-icons'; 
 
@@ -62,6 +64,19 @@ const WeeklyPlansListScreen = (props) => {
             </View>
     </View>
   )
+}
+
+WeeklyPlansListScreen.navigationOptions=navigationData=>{
+  const moveNotifications=()=>{
+      navigationData.navigation.navigate({
+          routeName:'Notifications2'
+      })
+  }
+  return{
+      headerRight: ()=><HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+          <Item title="notification" iconName='ios-notifications' onPress={moveNotifications}/>
+      </HeaderButtons>
+  }
 }
 const styles = StyleSheet.create({
   planscreen: {

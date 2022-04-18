@@ -31,6 +31,7 @@ import AddPlanScreen from '../screens/AddPlanScreen';
 import AddPlanScreen2 from '../screens/AddPlanScreen2';
 import OTPScreen from '../screens/otpTakingScreen';
 import PasswordScreen from '../screens/passwordScreen';
+import Notification2Screen from '../screens/notifications2Screen';
 
 const defaultNavConfiguration= {
     //set Default Configuration
@@ -51,6 +52,7 @@ const HomeNavigator=createStackNavigator(
         WeeklyPlanDetails:WeeklyPlanDetailsScreen,
         AddPlan:AddPlanScreen,
         AddPlan2:AddPlanScreen2,
+        Notifications2:Notification2Screen,
     },defaultNavConfiguration
 );
 
