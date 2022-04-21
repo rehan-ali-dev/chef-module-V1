@@ -17,24 +17,49 @@ import { HeaderButtons,Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/customHeaderButton";
 import Colors from "../constants/Colors";
 import { Ionicons } from '@expo/vector-icons'; 
+import { useDispatch,useSelector } from "react-redux";
+import {useState,useEffect} from "react";
+import IP from '../constants/IP';
+
+
 
 const WeeklyPlansListScreen = (props) => {
+
+
+  const [weeklyPlansList,setWeeklyPlansList]=useState([]);
+  const [isLoading,setLoading]=useState(true);
+  const chefDetail=useSelector(state=>state.order.chefDetails);
+
+
+  useEffect(()=>{
+    
+    fetch(`http://${IP.ip}:3000/weeklyPlan/kitchen/${chefDetail.chef_id}`)
+    .then((response)=>response.json())
+    .then((response)=>setWeeklyPlansList(response))
+    .catch((error)=>console.error(error))
+    .finally(()=>setLoading(false));
+    //console.log(chefDetail);
+  },[isLoading]);
+
+
+
   function showItem(itemData) {
     return (
       <WeeklyPlanCard
-        imgurl={itemData.item.img_url}
-        planname={itemData.item.PlanName}
-        KitchenName={itemData.item.KitchenName}
-        price={itemData.item.price}
+        imgurl={`http://${IP.ip}:3000/images/${itemData.item.logo}`}
+        planname={itemData.item.plan_name}
+        KitchenName={itemData.item.kitchen_name}
+        price={itemData.item.total}
         onSelect={() => {
           console.log("clicked")
           props.navigation.navigate({
             routeName: "WeeklyPlanDetails",
             params: {
-              imgurl: itemData.item.img_url,
-              planname: itemData.item.PlanName,
-              KitchenName: itemData.item.KitchenName,
-              price: itemData.item.price,
+              imgurl: itemData.item.logo,
+              planname: itemData.item.plan_name,
+              KitchenName: itemData.item.kitchen_name,
+              planId:itemData.item.plan_id,
+              price: itemData.item.total,
             },
           })
         }}
@@ -45,9 +70,9 @@ const WeeklyPlansListScreen = (props) => {
     <View style={styles.planscreen}>
       <FlatList
         style={styles.flatlist}
-        data={PLANSDATA}
+        data={weeklyPlansList}
         renderItem={showItem}
-        keyExtractor={(item) => item.PlanName}
+        keyExtractor={(item) => item.plan_id}
       />
       <View style={styles.btnContainer}>
             <TouchableOpacity onPress={()=>{   

@@ -15,27 +15,82 @@ import {
   Modal,
   Alert,
 } from "react-native"
-import { useState } from "react"
+import { useState,useEffect } from "react";
+import { useSelector,useDispatch } from "react-redux";
 import WeeklyPlanCard from "../components/weeklyPlanCard"
 import DayWiseFoodCard from "../components/DayWiseFoodCard"
 import { DAYSDATA } from "../constants/daysData"
+
+import IP from "../constants/IP";
 
 
 const WeeklyPlanDetailsScreen = (props) => {
     const imageUrl = props.navigation.getParam("imgurl")
     const planName = props.navigation.getParam("planname")
     const KitchenName = props.navigation.getParam("KitchenName")
-    const price = props.navigation.getParam("price")
-    const [currentmodalVisible, setModalVisible] = useState(false)
-  
+    const price = props.navigation.getParam("price");
+    const planId=props.navigation.getParam("planId");
+
+    const allDishes=useSelector(state=>state.order.Dishes);
+
+
+    const [planDetails,setPlanDetails]=useState({});
+    const [isLoading,setLoading]=useState(true);
+    const [daysData,setDaysData]=useState([]);
+    const [planDishes,setPlanDishes]=useState([]);
+    let days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+   
+    useEffect(()=>{
+      let daysArr=[];
+      fetch(`http://${IP.ip}:3000/weeklyPlan/getWeekDetails/${planId}`)
+      .then((response)=>response.json())
+      .then((response)=>setPlanDetails(response[0]))
+
+      .then(()=>console.log(planDetails))
+      .then(()=>{
+        //let daysArr=[];
+        daysArr.push(planDetails["monday"]);
+        daysArr.push(planDetails["tuesday"]);
+        daysArr.push(planDetails["wednesday"]);
+        daysArr.push(planDetails["thursday"]);
+        daysArr.push(planDetails["friday"]);
+        daysArr.push(planDetails["saturday"]);
+        setDaysData(daysArr);
+        console.log(daysData);
+
+      })
+      .then(()=>{
+        console.log("////    All Dihses ///////////")
+        console.log(allDishes);
+       let selectedDishes= allDishes.filter(dish => daysArr.includes(dish.dish_id))
+       console.log("////    All Dihses ///////////")
+       console.log(selectedDishes);
+      
+       for(let i=0;i<selectedDishes.length;i++){
+         selectedDishes[i]["day"]=days[i]
+        
+       }
+       setPlanDishes(selectedDishes);
+       console.log("///  Slected Dishes //")
+       console.log(selectedDishes);
+       //people.filter(person => id_filter.includes(person.id))
+      // setCategoricalMeals(categories.filter(item=>filteredCuisines.includes(item.cuisine)));
+      })
+      .catch((error)=>console.error(error))
+      .finally(()=>setLoading(false));
+    },[isLoading]);
+
+
+
     function showItem(itemData) {
       return (
         <DayWiseFoodCard
-          img_url={itemData.item.img_url}
-          Day={itemData.item.Day}
-          DishName={itemData.item.DishName}
-          price={itemData.item.price}
-          Category={itemData.item.Category}
+        img_url={`http://${IP.ip}:3000/images/${itemData.item.image}`}
+        DishName={itemData.item.dish_name}
+        price={itemData.item.price}
+        Category={itemData.item.cat_name}
+        Day={itemData.item.day}
           onSelect={() => {
             console.log("clicked")
            
@@ -47,7 +102,7 @@ const WeeklyPlanDetailsScreen = (props) => {
       <View style={styles.plancard}>
         <View>
           <WeeklyPlanCard
-            imgurl={imageUrl}
+            imgurl={`http://${IP.ip}:3000/images/${imageUrl}`}
             planname={planName}
             KitchenName={KitchenName}
             price={price}
@@ -60,9 +115,9 @@ const WeeklyPlanDetailsScreen = (props) => {
           <View style={styles.plantable}>
             <FlatList
               style={styles.flatlist}
-              data={DAYSDATA}
+              data={planDishes}
               renderItem={showItem}
-              keyExtractor={(item) => item.Day}
+              keyExtractor={(item) => item.dish_id}
             />
           {/* <View style={{position: 'absolute', bottom: 5,left:0,right:0, justifyContent: 'center', alignItems: 'center'}}>
           <TouchableOpacity
@@ -78,47 +133,7 @@ const WeeklyPlanDetailsScreen = (props) => {
          
         </View>
         {/* </ScrollView> */}
-        <View>
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={currentmodalVisible}
-            onRequestClose={() => {
-              setModalVisible(false)
-            }}>
-            <View style={styles.subscribepopup}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>Subscribed Weekly Plan!</Text>
-                <Text style={styles.planText}>Desi Khana</Text>
-                <Text style={styles.planText}>Ta'am Khana 2</Text>
-                <Text style={styles.planText}>2390 Rs.</Text>
-                <Text style={styles.planText}>
-                  Kindly Confirm or Cancel the order!
-                </Text>
-                <View style={styles.modalbtn}>
-                  <Pressable
-                    style={[styles.button, styles.btnConfirmCancel]}
-                    onPress={() => {
-                      Alert.alert("Your Weekly Plan has been Cancelled!")
-                      setModalVisible(false)
-                    }}>
-                    <Text style={styles.textStyle}>Cancel</Text>
-                  </Pressable>
-                  <Pressable
-                    style={[styles.button, styles.btnConfirmCancel]}
-                    onPress={() => {
-                      Alert.alert(
-                        "Your Weekly Plan has been Subscribed Successfully!"
-                      )
-                      setModalVisible(false)
-                    }}>
-                    <Text style={styles.textStyle}>Confirm</Text>
-                  </Pressable>
-                </View>
-              </View>
-            </View>
-          </Modal>
-        </View>
+      
         
       </View>
     )

@@ -43,7 +43,7 @@ const WeeklyPlanCard = (props) => {
           </View>
           <View>
             <Text style={styles.price} numberOfLines={1}>
-              {props.price}
+              Rs. {props.price}
             </Text>
           </View>
 

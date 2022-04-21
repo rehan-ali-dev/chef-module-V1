@@ -15,6 +15,7 @@ const Notification2Screen=(props)=>{
     const [notificationsData,setNotificationsData]=useState([]);
     const [plansData,setPlansData]=useState([]);
     const [selectedPlanId,setSelectedPlanId]=useState('');
+    const [selectedCustomer,setSelectedCustomer]=useState('');
     const [refreshing,setRefreshing]=useState(true);
     const chefDetail=useSelector(state=>state.order.chefDetails);
    
@@ -32,12 +33,12 @@ const Notification2Screen=(props)=>{
       },[refreshing]);
 
       // Function to confirm the order
-      const updateOrderAsConfirmed=(planId)=>{
+      const updateOrderAsConfirmed=async (planId)=>{
         let url=`http://${IP.ip}:3000/weeklyPlan/updateStatus/${planId}`;
         let data={
-            status:'Subscribed',
+            status:'Approved',
         }
-        fetch(url,{
+        await fetch(url,{
             method:'PUT',
             headers: {
                 Accept: 'application/json',
@@ -54,12 +55,12 @@ const Notification2Screen=(props)=>{
       }
 
       // Function to cancel the Plan
-      const updateOrderAsCancelled=(planId)=>{
+      const updateOrderAsCancelled=async (planId)=>{
         let url=`http://${IP.ip}:3000/weeklyPlan/updateStatus/${planId}`;
         let data={
             status:'Cancelled',
         }
-        fetch(url,{
+        await fetch(url,{
             method:'PUT',
             headers: {
                 Accept: 'application/json',
@@ -104,13 +105,54 @@ const Notification2Screen=(props)=>{
                     planname: itemData.item.plan_name,
                     KitchenName: itemData.item.kitchen_name,
                     price: itemData.item.total,
+                    planId:itemData.item.plan_id,
                     showButton:false,
                   },
                 })
             }}
 
             onSelect={()=>{
-            updateOrderAsConfirmed(itemData.item.plan_id);
+            updateOrderAsConfirmed(itemData.item.plan_id)
+            .then(()=>{
+                let phoneNumber=itemData.item.customer_id.substring(1);
+                let numForQuery='92'+phoneNumber;
+                let url=`http://${IP.ip}:3000/sendMessage`;
+                let data={
+                phone:numForQuery,
+                message:`Your subscription has been reviewed\n We are very happy to announce that Your wished Weekly Plan has been subscribed. Your plan will starts from your entered date.\n  \n\n Thanks\nBest Wishes From Team Ta'am Khana`
+            }
+            fetch(url,{
+                method:'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body:JSON.stringify(data)
+            }).then((response)=>response.json())
+            .then(()=>ToastAndroid.show("Message Sent To Customer", ToastAndroid.SHORT))
+            .then(()=>{
+                          //send notification to Admin
+                        fetch('https://exp.host/--/api/v2/push/send',{
+                            method:'POST',
+                            headers:{
+                                'Accept':'application/json',
+                                'Accept-Encoding':'gzip,deflate',
+                                'Content-Type':'application/json'
+                            },
+                            body: JSON.stringify({
+                                to:'ExponentPushToken[jXY39COY1qo-vtkAP4_dnh]',
+                                data:{
+                                   
+                                },
+                                title:`New Weekly Plan Confirmed`,
+                                body:`New Weekly Plan has been confirmed from ${itemData.item.kitchen_name}`,  
+                                experienceId: "@rehan.ali/Admin-module-app-V1",
+                            })
+                        }).then(()=>{
+                            console.log("Notification Sent to Admin")
+                        })
+                    })
+        })
         //     fetch(`http://${IP.ip}:3000/notifications/order/${itemData.item.order_id}`)
         //     .then((response)=>response.json())
         //    // .then((response)=>setNotificationData(response))
@@ -173,12 +215,52 @@ const Notification2Screen=(props)=>{
         //     .then(()=>{console.log("Clicked Working")})
         //     .catch((error)=>console.error(error));  
         //    }
-            }}
+          }}
 
 
 
            onCancel={()=>{
-            updateOrderAsCancelled(itemData.item.plan_id);
+            updateOrderAsCancelled(itemData.item.plan_id)
+            .then(()=>{
+                let phoneNumber=itemData.item.customer_id.substring(1);
+                let numForQuery='92'+phoneNumber;
+                let url=`http://${IP.ip}:3000/sendMessage`;
+                let data={
+                phone:numForQuery,
+                message:`Your subscription has been reviewed\n We are realy sorry that we can't serve you at this time due to some unfortunate reason. Stay with us for the next time.\n  \n\n Thanks\nBest Wishes From Team Ta'am Khana`
+            }
+            fetch(url,{
+                method:'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body:JSON.stringify(data)
+            }).then((response)=>response.json())
+            .then(()=>ToastAndroid.show("Message Sent To Customer", ToastAndroid.SHORT))
+            .then(()=>{
+                //send notification to Admin
+              fetch('https://exp.host/--/api/v2/push/send',{
+                  method:'POST',
+                  headers:{
+                      'Accept':'application/json',
+                      'Accept-Encoding':'gzip,deflate',
+                      'Content-Type':'application/json'
+                  },
+                  body: JSON.stringify({
+                      to:'ExponentPushToken[jXY39COY1qo-vtkAP4_dnh]',
+                      data:{
+                         
+                      },
+                      title:`New Weekly Plan Cancelled`,
+                      body:`New Plan has been cancelled from ${itemData.item.kitchen_name}`,  
+                      experienceId: "@rehan.ali/Admin-module-app-V1",
+                  })
+              }).then(()=>{
+                  console.log("Notification Sent to Admin")
+              })
+          })
+        })
         //     fetch(`http://${IP.ip}:3000/notifications/order/${itemData.item.order_id}`)
         //     .then((response)=>response.json())
         //    // .then((response)=>setNotificationData(response))

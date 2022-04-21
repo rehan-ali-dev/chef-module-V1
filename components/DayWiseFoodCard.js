@@ -50,7 +50,7 @@ const DayWiseFoodCard = (props) => {
               }}>
               {props.DishName}
             </Text>
-            <Text style={styles.mealDetails}>{props.price}</Text>
+            <Text style={styles.mealDetails}>Rs. {props.price}</Text>
             <Text style={styles.mealDetails}>{props.Category}</Text>
           </View>
         </View>

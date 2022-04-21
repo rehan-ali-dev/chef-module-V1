@@ -48,7 +48,9 @@ export default function App() {
         let recieverToken=notification.request.content.data.reciever;
         let orderId=notification.request.content.data.orderId;
         let status=notification.request.content.data.status;
+        if(orderId!==null){
         addnewNotification(orderId,senderToken,recieverToken,status);
+        }
         //you can navigate to different screen
         //send http request
       }
